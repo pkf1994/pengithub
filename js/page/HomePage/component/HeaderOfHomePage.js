@@ -166,7 +166,7 @@ const mapActions = dispatch => ({
             type: CommonAction.UPDATE_VALUE,
             payload: {
                 id: CommonActionId.UPDATE_TRENDING_SINCE,
-                trendingLanguage: since
+                since: since
             }
         })
     }

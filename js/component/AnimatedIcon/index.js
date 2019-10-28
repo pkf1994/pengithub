@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Animated} from 'react-native';
+import {Animated, LayoutAnimation} from 'react-native';
 
 const duration = 500
 
@@ -44,48 +44,27 @@ class AnimatedIcons extends Component{
     componentDidUpdate(prevProps, prevState, snapshot): void {
         const {color,newColor,opacity,newOpacity} = this.state
         if(color !== newColor) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
             this.setState({
-                animatedColor: this.colorAnimatedValue.interpolate({
-                    inputRange:[0,1],
-                    outputRange: [color,newColor]
-                }),
                 color: newColor
             })
-            Animated.timing(this.colorAnimatedValue,{
-                toValue: 1,
-                duration: duration,
-            }).start()
-            setTimeout(() => {
-                this.colorAnimatedValue = new Animated.Value(0)
-            },duration)
         }
 
         if(opacity !== newOpacity) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
             this.setState({
-                animatedOpacity: this.opacityAnimatedValue.interpolate({
-                    inputRange:[0,1],
-                    outputRange: [opacity,newOpacity]
-                }),
                 opacity: newOpacity
             })
-            Animated.timing(this.opacityAnimatedValue,{
-                toValue: 1,
-                duration: duration,
-                useNativeDriver: true
-            }).start()
-            setTimeout(() => {
-                this.opacityAnimatedValue = new Animated.Value(0)
-            },duration)
         }
     }
 
     render() {
-        const {animatedColor,animatedOpacity} = this.state
+        const {color,opacity} = this.state
         const {iconSet,style} = this.props
         const AnimatedIconComponent = Animated.createAnimatedComponent(iconSet)
         return (
-            <Animated.View style={{opacity: animatedOpacity}}>
-                <AnimatedIconComponent {...this.props} style={{...style,color:animatedColor,opacity:1}}/>
+            <Animated.View style={{opacity: opacity}}>
+                <AnimatedIconComponent {...this.props} style={{...style,color:color,opacity:1}}/>
             </Animated.View>
         )
     }

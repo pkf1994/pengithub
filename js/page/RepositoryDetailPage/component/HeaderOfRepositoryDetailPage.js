@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {View,Text,StyleSheet} from 'react-native'
 import {Avatar} from 'react-native-elements'
-import {CommonHeader,Badge} from '../../../component'
+import {CommonHeader,Badge,CollapsibleText} from '../../../component'
 import getColorOfLanguage from '../../../util/getColorOfLanguage';
 import getFontColorByBackgroundColor from '../../../util/getFontColorByBackgroundColor';
 import getLighterOrDarkerColor from '../../../util/getLighterOrDarkerColor';
@@ -64,32 +64,11 @@ class HeaderOfRepositoryDetailPage extends Component{
                     </Text>
                 </View>
 
-              {/*  <View style={{...styles.languageBadge,backgroundColor: subLanguageColor}}>
-                    <View style={{...styles.languageCircle,
-                        backgroundColor: languageColor}}/>
-                    <Text style={{...styles.languageText,color:fontColor,marginRight: 10}}>
-                        {staticRepositoryDetailModel.language}
-                    </Text>
-                </View>
-                <View>
-                    <Text>
-                        {staticRepositoryDetailModel.license.key}
-                    </Text>
-                </View>
-*/}
-                {/*name & author*/}
-              {/*  <View>
-                    <View>
-                        <Text>
-                            {staticRepositoryDetailModel.name}
-                        </Text>
-                    </View>
-                    <View>
-                        <Text>
-                            {staticRepositoryDetailModel.owner.login}
-                        </Text>
-                    </View>
-                </View>*/}
+                <CollapsibleText containerStyle={{margin: 10}}>
+                    A better notebook for Scala (and more)
+                    A better notebook for Scala (and more)
+                    A better notebook for Scala (and more)
+                </CollapsibleText>
             </View>
         )
     }

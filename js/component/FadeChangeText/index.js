@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import {Animated,findNodeHandle, UIManager} from 'react-native'
+import {Animated, findNodeHandle, LayoutAnimation, UIManager} from 'react-native'
 
 export default class FadeChangeText extends PureComponent{
     constructor(props) {
@@ -16,9 +16,7 @@ export default class FadeChangeText extends PureComponent{
             newColor: style.color,
             fontSize: style.fontSize,
             newFontSize: style.fontSize,
-            textWidth: undefined,
-            newTextWidth: 0,
-            animatedTextWidth: "auto",
+            textWidth: "auto",
             animatedFontColor: this.fontColorAnimatedValue.interpolate({
                 inputRange: [0,1],
                 outputRange: [style.color,style.color]
@@ -96,22 +94,10 @@ export default class FadeChangeText extends PureComponent{
                                                             pageX,
                                                             pageY
                                                         }) => {
+                        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
                         this.setState({
-                            animatedTextWidth: this.textWidthAnimatedValue.interpolate({
-                                inputRange: [0,1],
-                                outputRange: [this.state.textWidth,width]
-                            }),
                             textWidth: width
                         })
-
-                        Animated.timing(this.textWidthAnimatedValue,{
-                            toValue: 1,
-                            duration: 1500
-                        }).start()
-                        setTimeout(() => {
-                            this.textWidthAnimatedValue = new Animated.Value(0)
-                        },1500)
-
                     })
                 },duration)
             },duration)
@@ -157,20 +143,19 @@ export default class FadeChangeText extends PureComponent{
 
     _onLayout = ({nativeEvent}) => {
         let {width} = nativeEvent.layout
-        if(this.state.animatedTextWidth === 'auto') {
+        if(this.state.textWidth === 'auto') {
             this.setState({
-                animatedTextWidth: width,
                 textWidth: width
             })
         }
     }
 
     render() {
-        const {children,animatedFontColor,animatedTextWidth,animatedFontSize} = this.state
+        const {children,animatedFontColor,animatedFontSize,textWidth} = this.state
         const {containerStyle,style,needToChangeWidth} = this.props
         return (
                 needToChangeWidth ?
-                    <Animated.View style={{...containerStyle,width:animatedTextWidth,overflow:'hidden'}}>
+                    <Animated.View style={{...containerStyle,width:textWidth,overflow:'hidden'}}>
                         <Animated.View style={{opacity: this.fadeAnimatedValue,position:'absolute'}}>
                             <Animated.Text onLayout={this._onLayout} ref={ref => this.textRef = ref} {...this.props} style={{...style,color:animatedFontColor,fontSize: animatedFontSize,position:'absolute'}}>
                                 {children}

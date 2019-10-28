@@ -163,7 +163,8 @@ class ProjectItemCardEX extends PureComponent {
                                 <Text style={styles.starNumberText}>{starNumberformat(repositoryModel.stars)}</Text>
                             </View>
                             <View style={styles.newStar}>
-                                <Text style={styles.starNumberText}>+{starNumberformat(repositoryModel.currentPeriodStars)}&nbsp;{sinceStr}</Text>
+                                <Text style={[styles.starNumberText]}>+{starNumberformat(repositoryModel.currentPeriodStars)}&nbsp;</Text>
+                                <Text style={[styles.starNumberText,{fontWeight: 'bold'}]}>{sinceStr}</Text>
                             </View>
                         </View>
                     </View>

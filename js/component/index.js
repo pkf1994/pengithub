@@ -8,6 +8,7 @@ import AnimatedInView from './AnimatedInView'
 import FadeChangeText from './FadeChangeText'
 import LoadingView from './LoadingView'
 import Badge from './Badge'
+import CollapsibleText from './CollapsibleText'
 
 export {CommonHeader,
         FadeInView,
@@ -18,4 +19,5 @@ export {CommonHeader,
         Badge,
         AnimatedInView,
         LoadingView,
+        CollapsibleText,
         FadeChangeText}

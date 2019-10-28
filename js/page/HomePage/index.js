@@ -1,5 +1,15 @@
 import React,{Component} from 'react'
-import {View, RefreshControl, StyleSheet, Animated,Dimensions,Image,Text,StatusBar} from 'react-native';
+import {
+    View,
+    RefreshControl,
+    StyleSheet,
+    Animated,
+    Dimensions,
+    Image,
+    Text,
+    StatusBar,
+    LayoutAnimation
+} from 'react-native';
 import {Button} from 'react-native-elements'
 import {connect} from 'react-redux'
 import {FlatList} from 'react-native-gesture-handler'
@@ -24,6 +34,8 @@ class HomePage extends Component {
             hideStatusBar: false,
             heightOfHeader: 0,
             blurViewRef: null,
+            topOfHeader: 0,
+            topOfFlatList: 0,
             animatedHeaderTopValue: new Animated.Value(0),
             animatedLoadingIndicatorValue: new Animated.Value(1)
         }
@@ -70,7 +82,8 @@ class HomePage extends Component {
         const {heightOfHeader} = this.state
         if(!heightOfHeader) {
             this.setState({
-                heightOfHeader: height
+                heightOfHeader: height,
+                topOfFlatList: height
             })
             // P.S. 270,217,280区间的映射是告诉interpolate，所有大于270的值都映射成-50
             // 这样就不会导致Header在上滑的过程中一直向上滑动了
@@ -118,34 +131,44 @@ class HomePage extends Component {
 
     _onPanGestureEvent = ({nativeEvent}) => {
         const flagScrollVelocity = 6
-        const duration = 500
+        const duration = 600
 
         if(nativeEvent.velocity.y > flagScrollVelocity) {
             throttleByGap(() =>  {
                 //console.log("hide Animation")
-                Animated.timing(this.state.animatedHeaderTopValue,{
+               /* Animated.timing(this.state.animatedHeaderTopValue,{
                     toValue: 270,
                     duration: duration
-                }).start()
-                this.preBarStyle = StatusBar._currentValues.barStyle.value ? StatusBar._currentValues.barStyle.value : 'light-content'
-                StatusBar.setBarStyle('dark-content',true)
+                }).start()*/
+                LayoutAnimation.configureNext(LayoutAnimation.create(duration, 'easeInEaseOut', 'opacity'))
+                if(this.state.topOfHeader === 0) {
+                    this.setState({
+                        topOfHeader: - this.state.heightOfHeader,
+                        topOfFlatList: 0
+                    })
+                    this.preBarStyle = StatusBar._currentValues.barStyle.value ? StatusBar._currentValues.barStyle.value : 'light-content'
+                    StatusBar.setBarStyle('dark-content',true)
+                }
             },1000,'hideHeader',this)
         }
         //flatList from RNGH 有bug 初次向下滚动时会得到极小nativeEvent.velocity.y异常值
         if(nativeEvent.velocity.y < -flagScrollVelocity) {
             throttleByGap(() => {
-                //console.log("show Animation")
-                Animated.timing(this.state.animatedHeaderTopValue,{
-                    toValue: 0,
-                    duration: duration
-                }).start()
-                //console.log(this.preBarStyle)
-                this.preBarStyle && StatusBar.setBarStyle(this.preBarStyle,true)
+                if(this.state.topOfHeader !== 0) {
+                    LayoutAnimation.configureNext(LayoutAnimation.create(duration, 'easeInEaseOut', 'opacity'))
+                    this.setState({
+                        topOfHeader:0,
+                        topOfFlatList: this.state.heightOfHeader
+                    })
+                    this.preBarStyle && StatusBar.setBarStyle(this.preBarStyle,true)
+                }
+
             },1000,'showHeader',this)
         }
     }
 
     render() {
+        const {topOfHeader,topOfFlatList} = this.state
         const {trendingStore} = this.props
         const {currentPage,maxPage,pageScale,refreshing,languageColor,trendingRepositoryList,loading} = trendingStore
 
@@ -155,12 +178,12 @@ class HomePage extends Component {
 
             <View style={{...GlobalStyle.root_container,backgroundColor: 'white'}}>
                 <LoadingView loading={loading} style={{flex:1}}>
-                    <Animated.View style={{top:this.animatedHeaderTop}} onLayout={this._onHeaderContainerViewLayout}>
+                    <Animated.View style={{top:topOfHeader}} onLayout={this._onHeaderContainerViewLayout}>
                         <HeaderOfHomePage/>
                     </Animated.View>
 
 
-                    <Animated.View style={{...styles.flatListContainer,top:this.animatedFlatListTop}} >
+                    <Animated.View style={{...styles.flatListContainer,top:topOfFlatList}} >
                         <FlatList data={data}
                                   initialNumToRender={3}
                                 ref={ref => this.flatList = ref}
