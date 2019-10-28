@@ -7,6 +7,7 @@ import getColorOfLanguage from '../../../util/getColorOfLanguage';
 import getFontColorByBackgroundColor from '../../../util/getFontColorByBackgroundColor';
 import getLighterOrDarkerColor from '../../../util/getLighterOrDarkerColor';
 import Icon from 'react-native-vector-icons/FontAwesome5'
+
 var Color = require('color')
 //var topics = require('topics');
 //var github_topics = require('github-topics');
@@ -64,7 +65,10 @@ class HeaderOfRepositoryDetailPage extends Component{
                     </Text>
                 </View>
 
-                <CollapsibleText containerStyle={{margin: 10}}>
+                <CollapsibleText containerStyle={{marginBottom: 15}} textStyle={{fontWeight:'100'}}>
+                    A better notebook for Scala (and more)
+                    A better notebook for Scala (and more)
+                    A better notebook for Scala (and more)
                     A better notebook for Scala (and more)
                     A better notebook for Scala (and more)
                     A better notebook for Scala (and more)

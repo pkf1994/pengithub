@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
-import {StyleSheet,Text,View,TouchableWithoutFeedback,LayoutAnimation} from "react-native";
-
+import {StyleSheet,TouchableNativeFeedback,Text,View,TouchableWithoutFeedback,LayoutAnimation} from "react-native";
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/AntDesign'
 export default class CollapsibleText extends PureComponent{
 
     static propsType = {
@@ -9,7 +10,7 @@ export default class CollapsibleText extends PureComponent{
     }
 
     static defaultProps = {
-        fontSize: 14
+        fontSize: 13
     }
 
     constructor(props) {
@@ -47,22 +48,27 @@ export default class CollapsibleText extends PureComponent{
     }
 
     render() {
-        const {children,containerStyle,fontSize} = this.props
+        const {children,containerStyle,fontSize,textStyle} = this.props
         const {showAllText,heightOfContainer,lineHeight} = this.state
         const defaultLine = this._countDefaultLine(children)
 
         return (
             <View style={[S.container,containerStyle]}>
                 <View style={[S.collaptor,{height: showAllText ? heightOfContainer : defaultLine * lineHeight}]}>
-                    <TouchableWithoutFeedback onPress={this._triggerShowAllText}>
-                        <View style={S.content}
-                              onLayout={this._onContentLayout}>
-                            <Text style={[S.text,{fontSize: fontSize,lineHeight:lineHeight}]}>
-                                { children }
-                            </Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+                    <View style={S.content}
+                          onLayout={this._onContentLayout}>
+                        <Text style={[S.text,textStyle,{fontSize: fontSize,lineHeight:lineHeight}]}>
+                            { children }
+                        </Text>
+                    </View>
                 </View>
+                    <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[S.showAllButton,{height: lineHeight + 10}]} colors={['transparent', showAllText ? 'transparent' : '#FFF']}>
+                        <TouchableNativeFeedback  onPress={this._triggerShowAllText}>
+                            <View style={{marginRight:10,marginBottom:5}}>
+                                <Icon name={showAllText ? 'up' : "down"} size={16} style={{opacity:0.5}}/>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </LinearGradient>
             </View>
 
         )
@@ -72,10 +78,7 @@ export default class CollapsibleText extends PureComponent{
 
 const S = StyleSheet.create({
     container: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        backgroundColor: '#eeeeee',
-        borderRadius: 20
+        paddingVertical: 10
     },
     collaptor: {
         overflow: 'hidden'
@@ -86,4 +89,13 @@ const S = StyleSheet.create({
         left: 0,
         right: 0
     },
+    showAllButton: {
+        position: 'absolute',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        bottom:0,
+        left: 0,
+        right:0
+    }
 })
