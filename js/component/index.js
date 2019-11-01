@@ -9,13 +9,14 @@ import FadeChangeText from './FadeChangeText'
 import LoadingView from './LoadingView'
 import Badge from './Badge'
 import CollapsibleText from './CollapsibleText'
-
+import StretchInLoadedView from './StretchInLoadedView'
 export {CommonHeader,
         FadeInView,
         IconMaskedPicker,
         AnimatedBackgroundColorView,
         AnimatedIcons,
         FadeChangeFlatList,
+        StretchInLoadedView,
         Badge,
         AnimatedInView,
         LoadingView,

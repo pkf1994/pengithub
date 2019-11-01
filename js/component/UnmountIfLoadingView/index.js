@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 import {Animated, LayoutAnimation, StyleSheet, View,ActivityIndicator} from 'react-native';
 
-export default class LoadingView extends Component{
+export default class UnmountIfLoadingView extends Component{
 
     constructor(props) {
         super(props)
@@ -27,12 +27,13 @@ export default class LoadingView extends Component{
         const {loading} = this.state
         return (
             <View style={style}>
-                {children}
                 {
-                    loading &&
+                    loading ?
                     <Animated.View  pointerEvents='none' style={styles.loadingContainer}>
                         <ActivityIndicator size={indicatorSize ? indicatorSize : 'small'} color="black" />
                     </Animated.View>
+                        :
+                    children
                 }
             </View>
         )

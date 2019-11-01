@@ -5,5 +5,5 @@ export const URL_TRENDING = "https://github-trending-api.now.sh/repositories?"
 export const URL_ALL_LANGUAGE = baseUrl + "/repos/blackbird71SR/Hello-World/languages"
 
 //获取repository详情
-export const URL_REPOSITORY_DETAIL = baseUrl + "/repos/"
+export const URL_REPOSITORY_INFO = baseUrl + "/repos/"
 

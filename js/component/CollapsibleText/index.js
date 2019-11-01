@@ -10,24 +10,24 @@ export default class CollapsibleText extends PureComponent{
     }
 
     static defaultProps = {
-        fontSize: 13
+        fontSize: 15
     }
 
     constructor(props) {
         super(props)
-        const {fontSize} = props
         this.state = {
             showAllText: false,
             heightOfContainer: 30,
-            lineHeight: fontSize * 1.7
+            lineHeight: 22,
+            canBeCollapse: true
         }
     }
 
     _onContentLayout = ({nativeEvent}) => {
         const {height} = nativeEvent.layout
-        console.log(height)
         this.setState({
             heightOfContainer: height
+
         })
     }
 
@@ -39,9 +39,9 @@ export default class CollapsibleText extends PureComponent{
     }
 
     _countDefaultLine = (children) => {
-        if(children.length < 50){
+        if(children.length < 100){
             return 1
-        }else if(children.length > 50 && children.length < 90) {
+        }else if(children.length > 100 && children.length < 200) {
             return 2
         }
         return 3
@@ -50,8 +50,9 @@ export default class CollapsibleText extends PureComponent{
     render() {
         const {children,containerStyle,fontSize,textStyle} = this.props
         const {showAllText,heightOfContainer,lineHeight} = this.state
+        const {backgroundColor} = containerStyle
         const defaultLine = this._countDefaultLine(children)
-
+        const canBeCollapse = heightOfContainer >  defaultLine * lineHeight
         return (
             <View style={[S.container,containerStyle]}>
                 <View style={[S.collaptor,{height: showAllText ? heightOfContainer : defaultLine * lineHeight}]}>
@@ -62,15 +63,15 @@ export default class CollapsibleText extends PureComponent{
                         </Text>
                     </View>
                 </View>
-                    <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[S.showAllButton,{height: lineHeight + 10}]} colors={['transparent', showAllText ? 'transparent' : '#FFF']}>
+                {
+                    canBeCollapse &&
+                    <LinearGradient start={{x: 0.5, y: 0}} end={{x: 0.9, y: 0}} style={[S.showAllButtonContainer,{height: lineHeight + 10}]} colors={['transparent', showAllText ? 'transparent' : backgroundColor ? backgroundColor :'#FFF']}>
                         <TouchableNativeFeedback  onPress={this._triggerShowAllText}>
-                            <View style={{marginRight:10,marginBottom:5}}>
-                                <Icon name={showAllText ? 'up' : "down"} size={16} style={{opacity:0.5}}/>
-                            </View>
+                            <Icon name={showAllText ? 'up' : "down"} size={16} style={{opacity:0.5}}/>
                         </TouchableNativeFeedback>
                     </LinearGradient>
+                }
             </View>
-
         )
     }
 
@@ -90,11 +91,19 @@ const S = StyleSheet.create({
         right: 0
     },
     showAllButton: {
+        marginRight:10,
+        marginBottom:5,
+        padding: 3,
+        borderRadius: 30,
+        backgroundColor: '#eeeeee',
+        elevation: 10
+    },
+    showAllButtonContainer: {
         position: 'absolute',
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        bottom:0,
+        bottom:3,
         left: 0,
         right:0
     }

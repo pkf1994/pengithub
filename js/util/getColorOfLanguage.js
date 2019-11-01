@@ -200,6 +200,12 @@ const colorMap = {
 }
 
 export default (language) => {
+    if(language.toLowerCase() === 'c#'){
+        return "#178600"
+    }
+    if(language.toLowerCase() === 'c++'){
+        return "#f34b7d"
+    }
     for(let language_ in colorMap) {
         if(language.length !== language_.length) continue
         let lowerLanguge = language.toLowerCase()

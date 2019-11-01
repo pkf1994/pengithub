@@ -1,2 +1,4 @@
 import HeaderOfRepositoryDetailPage from './HeaderOfRepositoryDetailPage'
-export {HeaderOfRepositoryDetailPage}
+import CodeBottomTabItemScreen from './CodeBottomTabItemScreen'
+import IssuesBottomTabItemScreen from './IssuesBottomTabItemScreen'
+export {HeaderOfRepositoryDetailPage,CodeBottomTabItemScreen,IssuesBottomTabItemScreen}

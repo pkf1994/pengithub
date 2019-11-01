@@ -93,7 +93,12 @@ class ProjectItemCardEX extends PureComponent {
         navigation.navigate(
             'RepositoryDetailPage',
             {
-                repositoryModel:repositoryModel
+                repositoryModel:{
+                    name: repositoryModel.name,
+                    owner: repositoryModel.author,
+                    avatar: repositoryModel.avatar,
+                    language: repositoryModel.language
+                }
             }
         )
     }

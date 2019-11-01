@@ -8,7 +8,7 @@ import {
     Image,
     Text,
     StatusBar,
-    LayoutAnimation
+    LayoutAnimation, ActivityIndicator
 } from 'react-native';
 import {Button} from 'react-native-elements'
 import {connect} from 'react-redux'
@@ -102,7 +102,7 @@ class HomePage extends Component {
 
     _listFooterComponent() {
         return <View style={{alignItems:'center'}}>
-            <Spinner style={{margin:20}} isVisible={true} size={30} type='Bounce' color="black"/>
+            <ActivityIndicator size="large" color="black" />
         </View>
     }
 
@@ -123,6 +123,7 @@ class HomePage extends Component {
                 <Button title="retry"
                         titleStyle={{color:'gray',fontSize: 16,includeFontPadding:false}}
                         type="Outline"
+                        onPress={this.getData(false)}
                         containerStyle={{paddingHorizontal:20,marginBottom:100,borderColor:'gray',borderWidth:1,borderRadius:5}}/>
             </View>
         }
@@ -177,7 +178,7 @@ class HomePage extends Component {
         return (
 
             <View style={{...GlobalStyle.root_container,backgroundColor: 'white'}}>
-                <LoadingView loading={loading} style={{flex:1}}>
+                <LoadingView indicatorSize="large" loading={loading} style={{flex:1}}>
                     <Animated.View style={{top:topOfHeader}} onLayout={this._onHeaderContainerViewLayout}>
                         <HeaderOfHomePage/>
                     </Animated.View>

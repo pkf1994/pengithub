@@ -7,9 +7,7 @@ export default class Badge extends PureComponent{
         const {containerStyle,textStyle,children} = this.props
         return (
             <View style={{...styles.container,...containerStyle}}>
-                <Text style={{...styles.text,...textStyle}}>
                     {children}
-                </Text>
             </View>
         )
     }
