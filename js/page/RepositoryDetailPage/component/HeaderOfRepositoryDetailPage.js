@@ -120,7 +120,7 @@ class HeaderOfRepositoryDetailPage extends Component{
 
 
                     <Badge containerStyle={{backgroundColor: languageColor,alignSelf:'flex-start'}} onLayout={this._onLayoutBadge}>
-                        <Text style={{color:fontColor,fontStyle: 'italic',fontWeight:'bold'}}>
+                        <Text style={{color:fontColor,includeFontPadding: false,fontStyle: 'italic',fontWeight:'bold'}}>
                             {repositoryModel.language}
                         </Text>
                     </Badge>
@@ -137,7 +137,7 @@ class HeaderOfRepositoryDetailPage extends Component{
                 </View>
                 <StretchInLoadedView loading={gettingRepositoryInfo}>
 
-                    <CollapsibleText containerStyle={{padding: 10,paddingTop: 0}}
+                    <CollapsibleText containerStyle={{padding: 10}}
                                      textStyle={{fontWeight:'100',color: '#5E5E5E'}}>
                         &nbsp;&nbsp;&nbsp;{repositoryInfoModel.description}
                     </CollapsibleText>

@@ -1,10 +1,10 @@
 import {
-    createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
     createMaterialTopTabNavigator,
     createAppContainer
 } from 'react-navigation';
+import {createStackNavigator,TransitionPresets} from 'react-navigation-stack'
 import React from 'react'
 import {Provider} from 'react-redux'
 import {store,persistor} from '../redux'
@@ -15,7 +15,13 @@ import TestPage from '../page/TestPage';
 
 
 
-const MainNavigator = createStackNavigator(router);
+const MainNavigator = createStackNavigator(router,
+    {
+            navigationOptions: {
+                ...TransitionPresets.DefaultTransition
+            }
+        }
+    );
 
 export default createAppContainer(createSwitchNavigator(
     {
