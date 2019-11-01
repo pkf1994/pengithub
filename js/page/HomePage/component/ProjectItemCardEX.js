@@ -97,7 +97,8 @@ class ProjectItemCardEX extends PureComponent {
                     name: repositoryModel.name,
                     owner: repositoryModel.author,
                     avatar: repositoryModel.avatar,
-                    language: repositoryModel.language
+                    language: repositoryModel.language,
+                    languageColor: repositoryModel.languageColor
                 }
             }
         )
@@ -153,7 +154,7 @@ class ProjectItemCardEX extends PureComponent {
                 }} >
 
                     <View style={styles.languageView}>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row',flexShrink:-1}}>
                             <View style={{...styles.languageCircle,
                                 backgroundColor: repositoryModel.languageColor}}/>
                             <Text style={{...styles.languageText,color:descriptFontColor,marginRight: 10}}>

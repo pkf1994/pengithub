@@ -4,12 +4,13 @@ import IconMaskedPicker from './IconMaskedPicker'
 import AnimatedBackgroundColorView from './AnimatedBackgroundColorView'
 import AnimatedIcons from './AnimatedIcon'
 import FadeChangeFlatList from './FadeChangeFlatList'
-import AnimatedInView from './AnimatedInView'
+import SlideInView from './SlideInView'
 import FadeChangeText from './FadeChangeText'
 import LoadingView from './LoadingView'
 import Badge from './Badge'
 import CollapsibleText from './CollapsibleText'
 import StretchInLoadedView from './StretchInLoadedView'
+import ZoomInView from './ZoomInTransition'
 export {CommonHeader,
         FadeInView,
         IconMaskedPicker,
@@ -18,7 +19,8 @@ export {CommonHeader,
         FadeChangeFlatList,
         StretchInLoadedView,
         Badge,
-        AnimatedInView,
+        ZoomInView,
+        SlideInView,
         LoadingView,
         CollapsibleText,
         FadeChangeText}

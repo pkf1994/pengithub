@@ -22,7 +22,7 @@ import {
     createSyncAction_getTrendingData,
 } from '../../redux/module/trending/action';
 import {throttleByGap} from '../../util/Throttle';
-import {LoadingView,AnimatedInView} from '../../component';
+import {LoadingView,SlideInView} from '../../component';
 
 
 
@@ -71,9 +71,9 @@ class HomePage extends Component {
         const item = itemData.item
         const delay = (itemData.index - (currentPage - 1) * pageScale) * 100
 
-        return <AnimatedInView delay={delay}>
+        return <SlideInView delay={delay}>
             <ProjectItemCardEX repositoryModel={item} index={itemData.index}/>
-        </AnimatedInView>
+        </SlideInView>
 
     }
 

@@ -6,7 +6,7 @@ export default class DataStore {
         //强制刷新
         if(option.refresh) {
             return new Promise(((resolve, reject) => {
-                DataStore.fetchNetData(url).then((wrappedData) => {
+                DataStore.fetchNetData(url,option.fetchOption).then((wrappedData) => {
                     resolve(wrappedData)
                     this.cacheData(url,wrappedData,()=>{})
                 }).catch((e) => {
@@ -69,9 +69,9 @@ export default class DataStore {
      * @param url
      * @returns {Promise<any> | Promise<*>}
      */
-    static fetchNetData(url) {
+    static fetchNetData(url,fetchOption) {
         return new Promise((resolve,reject) => {
-            fetch(url).then(async (response) => {
+            fetch(url,fetchOption).then(async (response) => {
                 if (response.ok) {
                     const data = await response.json()
                     const wrappedData = this._wrapData(data,response.headers.map)

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {TouchableWithoutFeedback,Animated} from 'react-native'
 
-class AnimatedInView extends Component {
+class SlideInView extends Component {
     constructor(props) {
         super(props)
         this.animateItemMountValue = new Animated.Value(0)
@@ -43,4 +43,4 @@ class AnimatedInView extends Component {
 }
 
 
-export default AnimatedInView
+export default SlideInView

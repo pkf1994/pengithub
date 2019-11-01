@@ -1,129 +1,83 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {View,Text,StyleSheet,TouchableNativeFeedback} from 'react-native'
+import {View, Text, StyleSheet, TouchableNativeFeedback, ActivityIndicator  } from 'react-native'
 import {Avatar,Divider} from 'react-native-elements'
-import {CommonHeader, Badge, CollapsibleText, StretchInLoadedView} from '../../../component'
+import {CommonHeader, Badge, CollapsibleText, StretchInLoadedView,ZoomInView} from '../../../component'
 import getColorOfLanguage from '../../../util/getColorOfLanguage';
 import getFontColorByBackgroundColor from '../../../util/getFontColorByBackgroundColor';
 import getLighterOrDarkerColor from '../../../util/getLighterOrDarkerColor';
 import {withNavigation} from 'react-navigation'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import Fontisto from 'react-native-vector-icons/Fontisto'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {starNumberformat} from "../../../util/starNumberFormat";
 import getParamsFromNavigation from "../../../util/getParamsFromNavigation";
+import Icon from 'react-native-vector-icons/AntDesign'
 
-var Color = require('color')
-//var topics = require('topics');
-//var github_topics = require('github-topics');
-//var http = require('http')
 
 class HeaderOfRepositoryDetailPage extends Component{
 
     constructor(props) {
         super(props)
-        const {repositoryDetailStore} = props
         const {repositoryModel} = getParamsFromNavigation(props)
-        const {staticRepositoryDetailModel} = repositoryDetailStore
         const languageColor = getColorOfLanguage(repositoryModel.language)
         const subLanguageColor = getLighterOrDarkerColor(languageColor,0.2)
         const fontColor = getFontColorByBackgroundColor(subLanguageColor)
         this.state = {
             languageColor: languageColor,
             subLanguageColor: subLanguageColor,
-            fontColor: fontColor
+            fontColor: fontColor,
         }
     }
 
-    _handleLicense = (license) => {
-        if(license.length > 5) {
-            return license.substring(0,5)
-        }
-        return license
+
+    _goBack = () => {
+        this.props.navigation.goBack()
     }
 
-    _renderCountItem = (icon,label,count) => {
-        return (
-            <Badge containerStyle={{backgroundColor: '#F7F7F7',elevation: 0,paddingRight:5}}>
-                {icon}
-                <Text style={{fontWeight:'bold',color:'gray'}}>{label}</Text>
-                <View style={{backgroundColor:'white',borderRadius:30,marginLeft:5, paddingHorizontal:10}}>
-                    <Text style={{color:'gray'}}>{count}</Text>
-                </View>
-            </Badge>
-        )
-    }
-
- /*   _onLayoutRow1 = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Row1++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Row1++++++++++++")
-    }
-
-    _onLayoutName = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Name++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Name++++++++++++")
-    }
-
-    _onLayoutBadge = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Badge++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Badge++++++++++++")
-    }
-
-    _onLayoutRow2 = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Row2++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Row2++++++++++++")
-    }
-
-    _onLayoutAvatar = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Avatar++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Avatar++++++++++++")
-    }
-
-    _onLayoutOwner = ({nativeEvent}) => {
-        const {width,height} = nativeEvent.layout
-        console.log("+++++++++++Owner++++++++++++")
-        console.log("width:" + width)
-        console.log("height:" + height)
-        console.log("+++++++++++Owner++++++++++++")
-    }
-*/
     _renderComprehensiveComponentOfHeader = () => {
         const {repositoryModel} = getParamsFromNavigation(this.props)
         const {repositoryDetailStore} = this.props
         const {languageColor,fontColor} = this.state
-        const {repositoryInfoModel,staticRepositoryDetailModel,staticContributors,gettingRepositoryInfo} = repositoryDetailStore
+        const {repositoryInfoModel,contributorCount,gettingRepositoryInfo,gettingContributors} = repositoryDetailStore
         return (
             <View style={{flex:1}}>
-                {/*语言 & License Type*/}
 
                 <View style={S.row1}>
                     <Text style={[S.nameText,{flexShrink: -1}]}>
                         {repositoryModel.name}
                     </Text>
 
+                    <TouchableNativeFeedback  onPress={this._goBack}>
+                        <View style={S.goBackBtn}>
+                            <Icon name="left" size={16} color="gray"/>
+                        </View>
+                    </TouchableNativeFeedback>
+
+                    <View style={S.badges}>
+                        <ZoomInView duration={500}>
+                            {
+                                gettingRepositoryInfo && <ActivityIndicator color="gray" style={{marginLeft:5}}/>
+                            }
+                        </ZoomInView>
+
+                        <ZoomInView duration={500}>
+                            {
+                                repositoryInfoModel.license && !gettingRepositoryInfo &&
+                                <Badge containerStyle={{backgroundColor: "#eeeeee"}}>
+                                    <Text style={{includeFontPadding: false}}>
+                                        {repositoryInfoModel.license.spdx_id}
+                                    </Text>
+                                </Badge>
+                            }
+                        </ZoomInView>
+
+                        <Badge containerStyle={{backgroundColor: repositoryModel.languageColor ? repositoryModel.languageColor : languageColor,marginLeft:5}}>
+                            <Text style={{color:fontColor,includeFontPadding: false,fontStyle: 'italic',fontWeight:'bold'}}>
+                                {repositoryModel.language ? repositoryModel.language : 'unknow'}
+                            </Text>
+                        </Badge>
 
 
-                    <Badge containerStyle={{backgroundColor: languageColor,alignSelf:'flex-start'}} onLayout={this._onLayoutBadge}>
-                        <Text style={{color:fontColor,includeFontPadding: false,fontStyle: 'italic',fontWeight:'bold'}}>
-                            {repositoryModel.language}
-                        </Text>
-                    </Badge>
+
+                    </View>
                 </View>
 
                 <View style={S.row2}>
@@ -164,7 +118,7 @@ class HeaderOfRepositoryDetailPage extends Component{
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{staticContributors.length}</Text>
+                                <Text style={S.countItemText}>{gettingContributors ? "-" : contributorCount}</Text>
                                 <Text style={S.countItemLabel}>Contributors</Text>
                             </View>
                         </TouchableNativeFeedback>
@@ -198,7 +152,23 @@ const S = StyleSheet.create({
     row1: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        paddingTop: 25,
+    },
+    goBackBtn: {
+        position: "absolute",
+        padding: 5,
+        paddingLeft: 5,
+        paddingRight: 7,
+        backgroundColor: '#eeeeee',
+        borderRadius: 50,
+        top: 0,
+        left: 0,
+    },
+    badges: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        flexDirection: 'row'
     },
     row2: {
         flexDirection: 'row',
@@ -236,7 +206,7 @@ const S = StyleSheet.create({
     headerContainerStyle: {
         paddingLeft: 10,
         paddingRight: 10,
-        paddingTop: 10,
+        paddingTop: 5,
         paddingBottom: 0,
     },
     countRow: {

@@ -15,6 +15,7 @@ export const CommonAction = {
 }
 
 export const CommonActionId = {
+    GET_CONTRIBUTORS_DATA: 'GET_CONTRIBUTORS_DATA',
     GET_POPULAR_DATA: 'GET_POPULAR_DATA',
     GET_SEARCH_DATA: 'GET_SEARCH_DATA',
     GET_TRENDING_DATA: 'GET_TRENDING_DATA',

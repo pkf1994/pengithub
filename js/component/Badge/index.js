@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 20,
         padding: 4,
-        paddingHorizontal: 8,
-        elevation: 10,
+        paddingHorizontal: 8
     },
     text: {
         includeFontPadding: false
