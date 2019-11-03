@@ -1,25 +1,27 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {View, Text, StyleSheet, TouchableNativeFeedback, ActivityIndicator  } from 'react-native'
+import {View, Text, StyleSheet, TouchableNativeFeedback, ActivityIndicator,DeviceEventEmitter} from 'react-native'
 import {Avatar,Divider} from 'react-native-elements'
-import {CommonHeader, Badge, CollapsibleText, StretchInLoadedView,ZoomInView} from '../../../component'
-import getColorOfLanguage from '../../../util/getColorOfLanguage';
-import getFontColorByBackgroundColor from '../../../util/getFontColorByBackgroundColor';
-import getLighterOrDarkerColor from '../../../util/getLighterOrDarkerColor';
+import {CommonHeader, Badge, CollapsibleText, StretchInLoadedView,ZoomInTransition} from '../../../component'
 import {withNavigation} from 'react-navigation'
-import {starNumberformat} from "../../../util/starNumberFormat";
-import getParamsFromNavigation from "../../../util/getParamsFromNavigation";
+import {Util_GetLightOrDarkerColor,
+        Util_GetColorOfLanguage,
+        Util_StarNumberFormat,
+        Util_GetParamsFromNavigation,
+        Util_GetFontColorByBackgroundColor} from "../../../util";
 import Icon from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import {EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE} from "../../DeviceEventConstant";
 
 
 class HeaderOfRepositoryDetailPage extends Component{
 
     constructor(props) {
         super(props)
-        const {repositoryModel} = getParamsFromNavigation(props)
-        const languageColor = getColorOfLanguage(repositoryModel.language)
-        const subLanguageColor = getLighterOrDarkerColor(languageColor,0.2)
-        const fontColor = getFontColorByBackgroundColor(subLanguageColor)
+        const {repositoryModel} = Util_GetParamsFromNavigation(props)
+        const languageColor = Util_GetColorOfLanguage(repositoryModel.language)
+        const subLanguageColor = Util_GetLightOrDarkerColor(languageColor,0.2)
+        const fontColor = Util_GetFontColorByBackgroundColor(subLanguageColor)
         this.state = {
             languageColor: languageColor,
             subLanguageColor: subLanguageColor,
@@ -32,13 +34,17 @@ class HeaderOfRepositoryDetailPage extends Component{
         this.props.navigation.goBack()
     }
 
+    _onLayout = ({nativeEvent}) => {
+        DeviceEventEmitter.emit(EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE,nativeEvent)
+    }
+
     _renderComprehensiveComponentOfHeader = () => {
-        const {repositoryModel} = getParamsFromNavigation(this.props)
+        const {repositoryModel} = Util_GetParamsFromNavigation(this.props)
         const {repositoryDetailStore} = this.props
         const {languageColor,fontColor} = this.state
-        const {repositoryInfoModel,contributorCount,gettingRepositoryInfo,gettingContributors} = repositoryDetailStore
+        const {repositoryInfo,contributorCount} = repositoryDetailStore
         return (
-            <View style={{flex:1}}>
+            <View style={{flex:1}} onLayout={this._onLayout}>
 
                 <View style={S.row1}>
                     <Text style={[S.nameText,{flexShrink: -1}]}>
@@ -52,22 +58,30 @@ class HeaderOfRepositoryDetailPage extends Component{
                     </TouchableNativeFeedback>
 
                     <View style={S.badges}>
-                        <ZoomInView duration={500}>
-                            {
-                                gettingRepositoryInfo && <ActivityIndicator color="gray" style={{marginLeft:5}}/>
-                            }
-                        </ZoomInView>
 
-                        <ZoomInView duration={500}>
+                        <ZoomInTransition duration={500}>
                             {
-                                repositoryInfoModel.license && !gettingRepositoryInfo &&
-                                <Badge containerStyle={{backgroundColor: "#eeeeee"}}>
+                                repositoryInfo.requestErr &&
+                                <MaterialIcons color="#D52B2B" name="error-outline" size={24} style={{marginLeft:5}}/>
+                            }
+                        </ZoomInTransition>
+
+                        <ZoomInTransition duration={500}>
+                            {
+                                repositoryInfo.loading && <ActivityIndicator color="gray" style={{marginLeft:5}}/>
+                            }
+                        </ZoomInTransition>
+
+                        <ZoomInTransition duration={500}>
+                            {
+                                repositoryInfo.data.license && !repositoryInfo.loading &&
+                                <Badge containerStyle={{backgroundColor: "#eeeeee",marginLeft:5}}>
                                     <Text style={{includeFontPadding: false}}>
-                                        {repositoryInfoModel.license.spdx_id}
+                                        {repositoryInfo.data.license.spdx_id}
                                     </Text>
                                 </Badge>
                             }
-                        </ZoomInView>
+                        </ZoomInTransition>
 
                         <Badge containerStyle={{backgroundColor: repositoryModel.languageColor ? repositoryModel.languageColor : languageColor,marginLeft:5}}>
                             <Text style={{color:fontColor,includeFontPadding: false,fontStyle: 'italic',fontWeight:'bold'}}>
@@ -89,36 +103,36 @@ class HeaderOfRepositoryDetailPage extends Component{
                         {repositoryModel.owner}
                     </Text>
                 </View>
-                <StretchInLoadedView loading={gettingRepositoryInfo}>
+                <StretchInLoadedView loading={repositoryInfo.loading}>
 
                     <CollapsibleText containerStyle={{padding: 10}}
                                      textStyle={{fontWeight:'100',color: '#5E5E5E'}}>
-                        &nbsp;&nbsp;&nbsp;{repositoryInfoModel.description}
+                        &nbsp;&nbsp;&nbsp;{repositoryInfo.data.description}
                     </CollapsibleText>
                     <Divider />
 
                     <View style={S.countRow}>
                         <TouchableNativeFeedback>
                             <View  style={S.countItem}>
-                                <Text style={S.countItemText}>{starNumberformat(repositoryInfoModel.watchers_count)}</Text>
+                                <Text style={S.countItemText}>{Util_StarNumberFormat(repositoryInfo.data.watchers_count)}</Text>
                                 <Text style={S.countItemLabel}>Watch</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{starNumberformat(repositoryInfoModel.stargazers_count)}</Text>
+                                <Text style={S.countItemText}>{Util_StarNumberFormat(repositoryInfo.data.stargazers_count)}</Text>
                                 <Text style={S.countItemLabel}>Star</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{repositoryInfoModel.forks_count}</Text>
+                                <Text style={S.countItemText}>{repositoryInfo.data.forks_count}</Text>
                                 <Text style={S.countItemLabel}>Fork</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{gettingContributors ? "-" : contributorCount}</Text>
+                                <Text style={S.countItemText}>{contributorCount.loading ? "-" : contributorCount.data}</Text>
                                 <Text style={S.countItemLabel}>Contributors</Text>
                             </View>
                         </TouchableNativeFeedback>
@@ -168,7 +182,8 @@ const S = StyleSheet.create({
         position: "absolute",
         top: 0,
         right: 0,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     row2: {
         flexDirection: 'row',

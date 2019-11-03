@@ -1,11 +1,10 @@
 import React, {PureComponent} from 'react'
-import {View, StyleSheet, TouchableWithoutFeedback, Animated} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback,TouchableOpacity, Animated} from 'react-native';
 import {connect} from 'react-redux'
-import {Text,Button,Avatar} from 'react-native-elements';
+import {Text,Avatar} from 'react-native-elements';
 import AwesomeButton from "react-native-really-awesome-button";
-import {starNumberformat} from '../../../util/starNumberFormat';
+import {Util_StarNumberFormat,Util_DateFormat} from '../../../util';
 import {SINCE_TYPE, TRENDING_LANGUAGE} from '../../../redux/module/trending/reducer';
-import {getCurrentFormatDate} from '../../../util/DateFormat';
 import {withNavigation} from 'react-navigation'
 var Color = require('color');
 
@@ -138,10 +137,10 @@ class ProjectItemCardEX extends PureComponent {
                 sinceStr = 'this month'
                 break
             default:
-                sinceStr = getCurrentFormatDate()
+                sinceStr = Util_DateFormat()
         }
         return (
-            <TouchableWithoutFeedback  onPressIn={this._animateIn}
+            <TouchableOpacity  onLongPress={this._animateIn}
                                        onPress={this._navigateToRepositoryDetailPage}
                                        onPressOut={this._animateOut}>
                 <Animated.View  style={{...styles.container,
@@ -166,10 +165,10 @@ class ProjectItemCardEX extends PureComponent {
                         <View style={styles.starStatus}>
                             <View style={styles.starNumber}>
                                 <Text style={styles.star}>★&nbsp;</Text>
-                                <Text style={styles.starNumberText}>{starNumberformat(repositoryModel.stars)}</Text>
+                                <Text style={styles.starNumberText}>{Util_StarNumberFormat(repositoryModel.stars)}</Text>
                             </View>
                             <View style={styles.newStar}>
-                                <Text style={[styles.starNumberText]}>+{starNumberformat(repositoryModel.currentPeriodStars)}&nbsp;</Text>
+                                <Text style={[styles.starNumberText]}>+{Util_StarNumberFormat(repositoryModel.currentPeriodStars)}&nbsp;</Text>
                                 <Text style={[styles.starNumberText,{fontWeight: 'bold'}]}>{sinceStr}</Text>
                             </View>
                         </View>
@@ -212,7 +211,7 @@ class ProjectItemCardEX extends PureComponent {
                                 buttonStyle={{borderRadius: 8,backgroundColor:'white'}}/>*/}
                     </View>
                 </Animated.View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
         )
     }
 }
@@ -230,7 +229,6 @@ const styles = StyleSheet.create({
         marginRight: 15,
         marginLeft: 15,
         borderRadius: 18,
-
     },
     languageView: {
         paddingTop: 10,

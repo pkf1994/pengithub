@@ -1,6 +1,6 @@
 var moment = require('moment');
 
-export const getCurrentFormatDate = () => {
+export default () => {
     var now = moment();
     let dateStr = now.format("M月D日 ")
     let dayOfWeek

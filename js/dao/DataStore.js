@@ -1,5 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
+const CONTENT_TEPE_HTML = "application/vnd.github.VERSION.html; charset=utf-8"
+const CONTENT_TEPE_RAW = "application/vnd.github.VERSION.raw; charset=utf-8"
+
 export default class DataStore {
 
     static fetchData(url,option) {
@@ -39,7 +42,7 @@ export default class DataStore {
      * @param callback
      */
     static cacheData(url, wrappedData, callback) {
-        if(!url || !data)  return
+        if(!url || !wrappedData)  return
         AsyncStorage.setItem(url,JSON.stringify(wrappedData),callback)
     }
 
@@ -73,9 +76,18 @@ export default class DataStore {
         return new Promise((resolve,reject) => {
             fetch(url,fetchOption).then(async (response) => {
                 if (response.ok) {
-                    const data = await response.json()
-                    const wrappedData = this._wrapData(data,response.headers.map)
-                    resolve(wrappedData)
+                    if(response.headers.map['content-type'] === CONTENT_TEPE_HTML) {
+                        console.log(response)
+                        const data = await response.text()
+                        const wrappedData = this._wrapData(data,response.headers.map)
+                        resolve(wrappedData)
+                    }else{
+                        console.log(response)
+                        const data = await response.json()
+                        const wrappedData = this._wrapData(data,response.headers.map)
+                        resolve(wrappedData)
+                    }
+
                 } else {
                     throw (new Error('Network response was not ok'))
                 }

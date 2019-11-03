@@ -21,7 +21,7 @@ import {
     createSyncAction_getMoreTrendingData,
     createSyncAction_getTrendingData,
 } from '../../redux/module/trending/action';
-import {throttleByGap} from '../../util/Throttle';
+import {Util_Throtte} from '../../util';
 import {LoadingView,SlideInView} from '../../component';
 
 
@@ -135,7 +135,7 @@ class HomePage extends Component {
         const duration = 600
 
         if(nativeEvent.velocity.y > flagScrollVelocity) {
-            throttleByGap(() =>  {
+            Util_Throtte(() =>  {
                 //console.log("hide Animation")
                /* Animated.timing(this.state.animatedHeaderTopValue,{
                     toValue: 270,
@@ -154,7 +154,7 @@ class HomePage extends Component {
         }
         //flatList from RNGH 有bug 初次向下滚动时会得到极小nativeEvent.velocity.y异常值
         if(nativeEvent.velocity.y < -flagScrollVelocity) {
-            throttleByGap(() => {
+            Util_Throtte(() => {
                 if(this.state.topOfHeader !== 0) {
                     LayoutAnimation.configureNext(LayoutAnimation.create(duration, 'easeInEaseOut', 'opacity'))
                     this.setState({

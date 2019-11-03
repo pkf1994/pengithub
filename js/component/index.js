@@ -10,7 +10,8 @@ import LoadingView from './LoadingView'
 import Badge from './Badge'
 import CollapsibleText from './CollapsibleText'
 import StretchInLoadedView from './StretchInLoadedView'
-import ZoomInView from './ZoomInTransition'
+import ZoomInTransition from './ZoomInTransition'
+import FadeInTransition from './FadeInTransition'
 export {CommonHeader,
         FadeInView,
         IconMaskedPicker,
@@ -19,8 +20,9 @@ export {CommonHeader,
         FadeChangeFlatList,
         StretchInLoadedView,
         Badge,
-        ZoomInView,
         SlideInView,
         LoadingView,
+        ZoomInTransition,
+        FadeInTransition,
         CollapsibleText,
         FadeChangeText}

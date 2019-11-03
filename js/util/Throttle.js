@@ -1,4 +1,4 @@
-export const throttleByGap = (method, gap, meta, context) => {
+export default (method, gap, meta, context) => {
     let methodIndex = "" + meta
     let now = Date.now()
     //console.log(now)

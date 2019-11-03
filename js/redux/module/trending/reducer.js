@@ -1,5 +1,5 @@
 import {CommonAction,CommonActionId} from '../commonActionType'
-import {uniqueArr} from '../../../util/uniqueArr';
+import {Util_UniqueArr} from '../../../util';
 import { ToastAndroid } from 'react-native';
 
 export const TRENDING_LANGUAGE = {
@@ -98,7 +98,7 @@ export default (state = defaultState, action) => {
                 list1.push(key)
             }
             const list2 = defaultState.allLanguageList.concat(list1)
-            const finalAllLanguageList = uniqueArr(list2)
+            const finalAllLanguageList = Util_UniqueArr(list2)
             return {
                 ...state,
                 allLanguageList: finalAllLanguageList

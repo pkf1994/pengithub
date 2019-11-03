@@ -5,28 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-<img src="https://github.com/iptv-org.png" id="testImg" crossorigin="anonymous"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-<script>
-    function getColor () {
-        const img = document.getElementById('testImg')
-        const colorThief = new ColorThief();
-        let color = null
-        if (img.complete) {
-            try{
-                colorThief.getColor(img)
-            }catch (e) {
-                alert(e)
-            }
-
-        } else {
-            img.addEventListener('load', function() {
-                color = colorThief.getColor(img);
-                alert(color)
-            });
-        }
-    }
-</script>
+<style type="text/css">
+    body {padding: 10px}
+</style>
 </body>
 
 <body>

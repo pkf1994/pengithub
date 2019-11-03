@@ -1,16 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen, HeaderOfRepositoryDetailPage} from './component'
-import getParamsFromNavigation from '../../util/getParamsFromNavigation';
-import {createSyncAction_getRepositoryDetailData} from '../../redux/module/repositoryDetail/action';
+import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
+import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {createBottomTabNavigator,createAppContainer} from 'react-navigation'
-import {BottomTabBar} from 'react-navigation-tabs'
-import {CollapsibleText,StretchInLoadedView} from "../../component";
-import {Divider} from "react-native-elements";
-import {starNumberformat} from "../../util/starNumberFormat";
+
 
 class RepositoryDetailPage extends Component{
 
@@ -79,7 +76,7 @@ const mapState = state => ({
 
 const mapActions = dispatch => ({
     dispatchGetData: (owner,repo) => {
-        dispatch(createSyncAction_getRepositoryDetailData({},{owner:owner,repo:repo}))
+        dispatch(createSyncAction_getRepositoryInfoData({},{owner:owner,repo:repo}))
     }
 })
 

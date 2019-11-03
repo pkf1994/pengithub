@@ -15,7 +15,7 @@ import {SINCE_TYPE, TRENDING_LANGUAGE} from '../../../redux/module/trending/redu
 import {createSyncAction_getTrendingData} from '../../../redux/module/trending/action';
 
 import {URL} from '../index';
-import getFontColorByBackgroundColor from '../../../util/getFontColorByBackgroundColor';
+import getFontColorByBackgroundColor from '../../../util/GetFontColorByBackgroundColor';
 
 class HeaderOfHomePage extends Component{
     constructor(props) {

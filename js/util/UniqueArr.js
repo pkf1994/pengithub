@@ -1,4 +1,4 @@
-export const uniqueArr = (array) => {
+export default (array) => {
     var n = []; //一个新的临时数组
     //遍历当前数组
     for (var i = 0; i < array.length; i++) {

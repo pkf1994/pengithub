@@ -3,7 +3,7 @@ import {View,StyleSheet} from 'react-native'
 import {connect} from 'react-redux'
 import {Text,Button } from 'react-native-elements';
 import AwesomeButton from "react-native-really-awesome-button";
-import {starNumberformat} from '../../../util/starNumberFormat';
+import {Util_StarNumberFormat} from '../../../util';
 import {TRENDING_LANGUAGE} from '../../../redux/module/trending/reducer';
 var Color = require('color');
 
@@ -128,8 +128,8 @@ class ProjectItemCard extends PureComponent {
                             <Text style={{color: metaFontColor, ...styles.projectNameText}} numberOfLines={1}>{repositoryModel.author}/{repositoryModel.name}</Text>
                             <View style={{flexDirection:'row',alignItems: 'center'}}>
                                 <Text style={{...styles.star, color: metaFontColor }}>★</Text>
-                                <Text style={{color: metaFontColor, ...styles.projectAuthorText}}>{starNumberformat(repositoryModel.stars)}</Text>
-                                <Text style={{color: metaFontColor, ...styles.projectAuthorText}}>(+{starNumberformat(repositoryModel.currentPeriodStars)})</Text>
+                                <Text style={{color: metaFontColor, ...styles.projectAuthorText}}>{Util_StarNumberFormat(repositoryModel.stars)}</Text>
+                                <Text style={{color: metaFontColor, ...styles.projectAuthorText}}>(+{Util_StarNumberFormat(repositoryModel.currentPeriodStars)})</Text>
                             </View>
                         </View>
 

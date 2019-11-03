@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import {Animated} from 'react-native'
 
 
-class ZoomInTransition extends Component {
+class FadeInTransition extends Component {
     constructor(props) {
         super(props)
-        this.zoomInAnimatedValue = new Animated.Value(0)
+        this.fadeInAnimatedValue = new Animated.Value(0)
         this.state = {
             children: props.children,
             newChildren: props.children
@@ -15,7 +15,7 @@ class ZoomInTransition extends Component {
     componentDidMount(): void {
         const duration = this.props.duration ? this.props.duration : 1000
         if(this.state.children) {
-            Animated.spring(this.zoomInAnimatedValue, {
+            Animated.spring(this.fadeInAnimatedValue, {
                 toValue: 1,
                 duration: duration,
                 useNativeDriver: true,
@@ -37,7 +37,7 @@ class ZoomInTransition extends Component {
         const duration = this.props.duration ? this.props.duration : 400
         if(this.state.children !== this.state.newChildren) {
             if(!this.state.newChildren) {
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.spring(this.fadeInAnimatedValue, {
                     toValue: 0,
                     duration: duration,
                     useNativeDriver: true,
@@ -48,23 +48,37 @@ class ZoomInTransition extends Component {
                         children: this.state.newChildren
                     })
                 },duration)
-            }
-
-            if(!this.state.children && this.state.newChildren) {
+                return
+            }else if(!this.state.children && this.state.newChildren) {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.spring(this.fadeInAnimatedValue, {
                     toValue: 1,
                     duration: duration,
                     useNativeDriver: true,
                     //delay: delay ? delay : 0
                 }).start()
+                return
             }
 
-            this.setState({
-                children: this.state.newChildren
-            })
+            Animated.spring(this.fadeInAnimatedValue, {
+                toValue: 0,
+                duration: duration,
+                useNativeDriver: true,
+                //delay: delay ? delay : 0
+            }).start()
+            setTimeout(() => {
+                this.setState({
+                    children: this.state.newChildren
+                })
+                Animated.spring(this.fadeInAnimatedValue, {
+                    toValue: 1,
+                    duration: duration,
+                    useNativeDriver: true,
+                    //delay: delay ? delay : 0
+                }).start()
+            },duration)
         }
     }
 
@@ -73,15 +87,7 @@ class ZoomInTransition extends Component {
 
         return (
             <Animated.View  style={{
-                opacity: this.zoomInAnimatedValue,
-                transform: [
-                    {
-                        scale: this.zoomInAnimatedValue.interpolate({
-                            inputRange:[0,1],
-                            outputRange: [0.8,1]
-                        })
-                    }
-                ]}}>
+                opacity: this.fadeInAnimatedValue}}>
                 {children}
             </Animated.View>
         )
@@ -89,4 +95,4 @@ class ZoomInTransition extends Component {
 }
 
 
-export default ZoomInTransition
+export default FadeInTransition

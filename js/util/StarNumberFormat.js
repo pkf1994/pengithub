@@ -1,4 +1,4 @@
-export const starNumberformat = (starNumber) => {
+export default (starNumber) => {
     if(starNumber >= 1000) {
         let starNumberString = (starNumber/1000).toString()
         let formattedString = starNumberString.substring(0,starNumberString.indexOf('.') + 2) + 'k'
