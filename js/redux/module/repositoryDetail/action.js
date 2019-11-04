@@ -45,7 +45,7 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             }
         })
 
-        getRepositoryInfoDataController.abort()
+        //getRepositoryInfoDataController.abort()
         DataStore.fetchData(url,{...option,fetchOption:{signal:getRepositoryInfoDataSignal}}).then(wrappedData => {
             if(wrappedData.data) {
                 dispatch({
@@ -67,7 +67,7 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             CommonExceptionHandler(e,dispatch,CommonActionId.GET_REPOSITORY_INFO_DATA)
         })
 
-        getContributorsCountController.abort()
+        //getContributorsCountController.abort()
         DataStore.fetchData(contributorsUrl,{...option,fetchOption:{signal:getContributorsCountSignal}}).then(wrappedData => {
             if(wrappedData.data) {
                 if(!wrappedData.headers.link) {
@@ -104,8 +104,7 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
         })
 
         //getReadmeController.abort()
-        DataStore.fetchData(readmeUrl,{...option,fetchOption:{signal:getReadmeSignal,headers:{Accept:"application/vnd.github.VERSION.html"}}}).then(wrappedData => {
-            console.log(wrappedData)
+        DataStore.fetchData(readmeUrl,{...option,refresh:true,fetchOption:{signal:getReadmeSignal,headers:{Accept:"application/vnd.github.VERSION.html"}}}).then(wrappedData => {
             if(wrappedData.data) {
                 dispatch({
                     type: CommonAction.GET_DATA_SUCCESS,

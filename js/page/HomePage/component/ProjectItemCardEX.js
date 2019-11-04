@@ -93,7 +93,7 @@ class ProjectItemCardEX extends PureComponent {
             'RepositoryDetailPage',
             {
                 repositoryModel:{
-                    name: repositoryModel.name,
+                    repo: repositoryModel.name,
                     owner: repositoryModel.author,
                     avatar: repositoryModel.avatar,
                     language: repositoryModel.language,
@@ -140,7 +140,7 @@ class ProjectItemCardEX extends PureComponent {
                 sinceStr = Util_DateFormat()
         }
         return (
-            <TouchableOpacity  onLongPress={this._animateIn}
+            <TouchableWithoutFeedback  onLongPress={this._animateIn}
                                        onPress={this._navigateToRepositoryDetailPage}
                                        onPressOut={this._animateOut}>
                 <Animated.View  style={{...styles.container,
@@ -211,7 +211,7 @@ class ProjectItemCardEX extends PureComponent {
                                 buttonStyle={{borderRadius: 8,backgroundColor:'white'}}/>*/}
                     </View>
                 </Animated.View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         )
     }
 }

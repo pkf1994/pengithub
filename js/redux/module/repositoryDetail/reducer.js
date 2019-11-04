@@ -2,12 +2,12 @@ import {CommonAction,CommonActionId} from '../commonActionType'
 import {Util_DecodeBase64} from '../../../util'
 const defaultState = {
     repositoryInfo: {
-        data:{},
+        data: {},
         loading: false,
         requestErr: false
     },
     readme: {
-        data:{},
+        data: undefined,
         loading: false,
         requestErr: false
     },

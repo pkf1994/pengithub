@@ -48,7 +48,7 @@ class HeaderOfRepositoryDetailPage extends Component{
 
                 <View style={S.row1}>
                     <Text style={[S.nameText,{flexShrink: -1}]}>
-                        {repositoryModel.name}
+                        {repositoryModel.repo}
                     </Text>
 
                     <TouchableNativeFeedback  onPress={this._goBack}>

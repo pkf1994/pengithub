@@ -52,7 +52,7 @@ class RepositoryDetailPage extends Component{
 
     _getData = () => {
         const {repositoryModel} = getParamsFromNavigation(this.props)
-        this.props.dispatchGetData(repositoryModel.owner,repositoryModel.name)
+        this.props.dispatchGetData(repositoryModel.owner,repositoryModel.repo)
     }
 
     render() {

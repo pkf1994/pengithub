@@ -1,0 +1,50 @@
+<style>
+    #readme{
+        padding:10px
+    }
+    pre {
+        white-space: pre;
+        word-wrap: normal;
+        overflow-x: auto;
+        line-height: 1.5;
+        padding: 10px;
+        padding-right: 0;
+        background: #eeeeee;
+    }
+    p,li{
+        line-height: 1.7;
+    }
+    .oction, .oction-link{
+        opacity: 0;
+    }
+    .markdown-body h1, .markdown-body h2 {
+        padding-bottom: .3em;
+        border-bottom: 1px solid #eaecef;
+    }
+</style>
+<script>
+    function handleATag(){
+        const host = window.location.host === '' ? 'about:blank' : window.location.host
+        let array = document.getElementsByTagName("a")
+        for(let i = 0; i < array.length; i++){
+
+            if(array[i].href.indexOf(host) === -1) {
+                continue
+            }
+
+            if(array[i].hash.indexOf("#")===0){
+                if(array[i].href) {
+                    array[i].setAttribute("href",array[i].href.replace("#","#user-content-"))
+                }
+            }
+        }
+    }
+    function handleSvgTag() {
+        let array = document.getElementsByTagName("svg")
+        for(let i = 0; i < array.length; i++){
+            array[i].setAttribute("width",0)
+        }
+    }
+    handleATag()
+    handleSvgTag()
+</script>
