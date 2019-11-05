@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux'
 var Color = require('color');
-import {getCurrentFormatDate} from '../../../util/DateFormat';
+import {Util_DateFormat} from '../../../util';
 import {CommonHeader,FadeChangeText,IconMaskedPicker,FadeInView,AnimatedIcons} from '../../../component';
 import {CommonAction, CommonActionId} from '../../../redux/module/commonActionType';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -75,7 +75,7 @@ class HeaderOfHomePage extends Component{
                 sinceStr = 'This month'
                 break
             default:
-                sinceStr = getCurrentFormatDate()
+                sinceStr = Util_DateFormat()
         }
         let fontColor = getFontColorByBackgroundColor(languageColor)
         let subFontColor = languageColor === 'white' ? 'gray' : getFontColorByBackgroundColor(languageColor)

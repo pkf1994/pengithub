@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import {Animated} from 'react-native'
+import {TouchableWithoutFeedback,Animated} from 'react-native'
 
-
-class ZoomInTransition extends Component {
+class SlideInTransition extends Component {
     constructor(props) {
         super(props)
-        this.zoomInAnimatedValue = new Animated.Value(0)
-        this.duration = props.duration ?props.duration : 400
+        this.animatedValue = new Animated.Value(0)
+        this.duration = props.duration ? props.duration : 400
+        this.delay = props.delay ? props.delay : 0
         this.state = {
             children: props.children,
             newChildren: props.children
@@ -15,11 +15,11 @@ class ZoomInTransition extends Component {
 
     componentDidMount(): void {
         if(this.state.children) {
-            Animated.spring(this.zoomInAnimatedValue, {
+            Animated.timing(this.animatedValue, {
                 toValue: 1,
-                duration: this.duration,
+                duration: 400,
                 useNativeDriver: true,
-                //delay: delay ? delay : 0
+                delay: this.delay
             }).start()
         }
     }
@@ -36,7 +36,7 @@ class ZoomInTransition extends Component {
     componentDidUpdate(prevProps, prevState, snapshot): void {
         if(this.state.children !== this.state.newChildren) {
             if(!this.state.newChildren) {
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 0,
                     duration: this.duration,
                     useNativeDriver: true,
@@ -53,7 +53,7 @@ class ZoomInTransition extends Component {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.spring(this.animatedValue, {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
@@ -68,24 +68,25 @@ class ZoomInTransition extends Component {
     }
 
     render() {
-        const {children} = this.state
+        const {children} = this.props
 
         return (
-            <Animated.View  style={{
-                opacity: this.zoomInAnimatedValue,
-                transform: [
-                    {
-                        scale: this.zoomInAnimatedValue.interpolate({
-                            inputRange:[0,1],
-                            outputRange: [0.8,1]
-                        })
-                    }
-                ]}}>
-                {children}
-            </Animated.View>
+                <Animated.View  style={{
+                    opacity: this.animatedValue,
+                    transform: [
+                        {
+                            translateY: this.animatedValue.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [100, 0]
+                            })
+                        }
+                    ]}}>
+
+                    {children}
+                </Animated.View>
         )
     }
 }
 
 
-export default ZoomInTransition
+export default SlideInTransition

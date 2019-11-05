@@ -20,12 +20,6 @@ class CodeBottomTabItemScreen extends Component{
         ],
     }
 
-    componentDidMount(): void {
-        const {hideHeader,showHeader} = this.props
-        DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,hideHeader)
-        DeviceEventEmitter.addListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,showHeader)
-    }
-
     componentWillUnmount(): void {
         console.log("unmount: CodeBottomTabItemScreen")
     }

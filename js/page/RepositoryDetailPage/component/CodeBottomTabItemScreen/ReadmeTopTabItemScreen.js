@@ -4,8 +4,11 @@ import {connect} from 'react-redux'
 import {FadeInTransition} from "../../../../component";
 import { WebView } from 'react-native-webview';
 import {
+    EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
-    EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE, EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
+    EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../../../DeviceEventConstant";
 import {Util_Throtte} from "../../../../util";
 
@@ -131,11 +134,13 @@ class ReadmeTopTabItemScreen extends PureComponent{
         if(nativeEvent.data !== "0") {
             Util_Throtte(() => {
                 DeviceEventEmitter.emit(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE)
+                DeviceEventEmitter.emit(EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE)
             },500,"hideHeader",this)
             return
         }
         Util_Throtte(() => {
             DeviceEventEmitter.emit(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE)
+            DeviceEventEmitter.emit(EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE)
         },500,"showHeader",this)
     }
 

@@ -1,13 +1,17 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {LayoutAnimation, TouchableNativeFeedback, StatusBar, StyleSheet, View} from 'react-native';
-import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen, HeaderOfRepositoryDetailPage} from './component'
+import {LayoutAnimation, TouchableNativeFeedback, StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
+import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen,CustomBottomTabBar, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
 import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {createBottomTabNavigator,createAppContainer} from 'react-navigation'
 import {PanGestureHandler} from "react-native-gesture-handler";
+import {
+    EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
+} from "../DeviceEventConstant";
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
@@ -26,15 +30,15 @@ class RepositoryDetailPage extends Component{
 
     componentDidMount(): void {
         this._getData()
+        DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
+        DeviceEventEmitter.addListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._showHeader)
     }
 
     _initBottomTab() {
         if(this._bottomTabNavigator) return this._bottomTabNavigator
         return this._bottomTabNavigator = createAppContainer(createBottomTabNavigator({
             CodeTabItemScreen: {
-                screen: props => <CodeBottomTabItemScreen {...props}
-                                                          hideHeader={this._hideHeader}
-                                                          showHeader={this._showHeader}/>,
+                screen: CodeBottomTabItemScreen,
                 navigationOptions: {
                     tabBarLabel: 'code',
                     tabBarIcon: ({tintColor}) => <FontAwesome name="code" size={24} style={{color:tintColor}}/>
@@ -48,6 +52,7 @@ class RepositoryDetailPage extends Component{
                 }
             }
         },{
+            tabBarComponent: CustomBottomTabBar,
             tabBarOptions: {
                 activeTintColor: 'black'
             }
@@ -115,7 +120,6 @@ class RepositoryDetailPage extends Component{
 
 const mapState = state => ({
     repositoryDetailStore: state.repositoryDetail,
-
 })
 
 const mapActions = dispatch => ({

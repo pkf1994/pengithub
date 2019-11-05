@@ -22,8 +22,7 @@ import {
     createSyncAction_getTrendingData,
 } from '../../redux/module/trending/action';
 import {Util_Throtte} from '../../util';
-import {LoadingView,SlideInView} from '../../component';
-import {FadeInView} from "../../component";
+import {LoadingView,SlideInTransition} from '../../component';
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
@@ -70,11 +69,11 @@ class HomePage extends Component {
         const {currentPage,pageScale} = trendingStore
 
         const item = itemData.item
-        const delay = (itemData.index - (currentPage - 1) * pageScale) * 100
+        const delay = (itemData.index - (currentPage - 1) * pageScale) * 50
 
-        return <SlideInView delay={delay}>
+        return <SlideInTransition delay={delay}>
             <ProjectItemCardEX repositoryModel={item} index={itemData.index}/>
-        </SlideInView>
+        </SlideInTransition>
 
     }
 
@@ -121,7 +120,7 @@ class HomePage extends Component {
 
     _onPanGestureEvent = ({nativeEvent}) => {
         const flagScrollVelocity = 6
-
+        console.log(nativeEvent)
         if(nativeEvent.velocity.y > flagScrollVelocity) {
             Util_Throtte(() =>  {
                 //console.log("hide Animation")
@@ -166,7 +165,7 @@ class HomePage extends Component {
         return (
 
             <View style={{...GlobalStyle.root_container,backgroundColor: 'white'}}>
-                <LoadingView indicatorSize="large" loading={loading} style={{flex:1}}>
+                <LoadingView indicatorSize={50} loading={loading} style={{flex:1}}>
                     <Animated.View style={{top:topOfHeader}} onLayout={this._onHeaderContainerViewLayout}>
                         <HeaderOfHomePage/>
                     </Animated.View>

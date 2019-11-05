@@ -1,6 +1,8 @@
 import {CommonAction,CommonActionId} from '../commonActionType'
 import {Util_DecodeBase64} from '../../../util'
 const defaultState = {
+    showHeader: true,
+    showBottomTabBar: true,
     repositoryInfo: {
         data: {},
         loading: false,
@@ -136,6 +138,15 @@ export default (state = defaultState, action) => {
                     loading: false,
                     requestErr: true
                 }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.TRIGGER_FLAG) {
+        if(action.payload.id === CommonActionId.TRIGGER_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE) {
+            return {
+                ...state,
+                showHeader: action.payload.flag
             }
         }
     }

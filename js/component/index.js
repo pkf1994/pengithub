@@ -4,7 +4,7 @@ import IconMaskedPicker from './IconMaskedPicker'
 import AnimatedBackgroundColorView from './AnimatedBackgroundColorView'
 import AnimatedIcons from './AnimatedIcon'
 import FadeChangeFlatList from './FadeChangeFlatList'
-import SlideInView from './SlideInView'
+import SlideInTransition from './SlideInTransition'
 import FadeChangeText from './FadeChangeText'
 import LoadingView from './LoadingView'
 import Badge from './Badge'
@@ -20,7 +20,7 @@ export {CommonHeader,
         FadeChangeFlatList,
         StretchInLoadedView,
         Badge,
-        SlideInView,
+        SlideInTransition,
         LoadingView,
         ZoomInTransition,
         FadeInTransition,
