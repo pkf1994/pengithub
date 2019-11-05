@@ -23,8 +23,9 @@ import {
 } from '../../redux/module/trending/action';
 import {Util_Throtte} from '../../util';
 import {LoadingView,SlideInView} from '../../component';
+import {FadeInView} from "../../component";
 
-
+const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
 class HomePage extends Component {
 
@@ -32,7 +33,7 @@ class HomePage extends Component {
         super(props)
         this.state = {
             hideStatusBar: false,
-            heightOfHeader: 0,
+            heightOfHeader: undefined,
             blurViewRef: null,
             topOfHeader: 0,
             topOfFlatList: 0,
@@ -81,22 +82,10 @@ class HomePage extends Component {
         let {height} = e.nativeEvent.layout
         const {heightOfHeader} = this.state
         if(!heightOfHeader) {
+            LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
             this.setState({
                 heightOfHeader: height,
-                topOfFlatList: height
             })
-            // P.S. 270,217,280区间的映射是告诉interpolate，所有大于270的值都映射成-50
-            // 这样就不会导致Header在上滑的过程中一直向上滑动了
-            this.animatedHeaderTop = this.state.animatedHeaderTopValue.interpolate({
-                inputRange: [0, 270, 271, 280],
-                outputRange: [0, -height, -height, -height]
-            })
-
-            this.animatedFlatListTop = this.state.animatedHeaderTopValue.interpolate({
-                inputRange: [0, 270, 271, 280],
-                outputRange: [height, 0, 0, 0]
-            })
-
         }
     }
 
@@ -113,13 +102,13 @@ class HomePage extends Component {
         const heightOfEmptyComponent = Dimensions.get('window').height - heightOfHeader
 
         if(getDataReturnNull) {
-            return <View style={[styles.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
-                <Image style={styles.emptyImage} source={require('../../asset/image/box_PNG132.png')}/>
+            return <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
+                <Image style={S.emptyImage} source={require('../../asset/image/box_PNG132.png')}/>
             </View>
         }
         if(networkErr) {
-            return <View style={[styles.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
-                <Text style={styles.networkErr}>NETWORK ERR</Text>
+            return <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
+                <Text style={S.networkErr}>NETWORK ERR</Text>
                 <Button title="retry"
                         titleStyle={{color:'gray',fontSize: 16,includeFontPadding:false}}
                         type="Outline"
@@ -132,7 +121,6 @@ class HomePage extends Component {
 
     _onPanGestureEvent = ({nativeEvent}) => {
         const flagScrollVelocity = 6
-        const duration = 600
 
         if(nativeEvent.velocity.y > flagScrollVelocity) {
             Util_Throtte(() =>  {
@@ -141,11 +129,11 @@ class HomePage extends Component {
                     toValue: 270,
                     duration: duration
                 }).start()*/
-                LayoutAnimation.configureNext(LayoutAnimation.create(duration, 'easeInEaseOut', 'opacity'))
+                LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
                 if(this.state.topOfHeader === 0) {
                     this.setState({
                         topOfHeader: - this.state.heightOfHeader,
-                        topOfFlatList: 0
+                        topOfFlatList:  - this.state.heightOfHeader
                     })
                     this.preBarStyle = StatusBar._currentValues.barStyle.value ? StatusBar._currentValues.barStyle.value : 'light-content'
                     StatusBar.setBarStyle('dark-content',true)
@@ -156,10 +144,10 @@ class HomePage extends Component {
         if(nativeEvent.velocity.y < -flagScrollVelocity) {
             Util_Throtte(() => {
                 if(this.state.topOfHeader !== 0) {
-                    LayoutAnimation.configureNext(LayoutAnimation.create(duration, 'easeInEaseOut', 'opacity'))
+                    LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
                     this.setState({
                         topOfHeader:0,
-                        topOfFlatList: this.state.heightOfHeader
+                        topOfFlatList: 0
                     })
                     this.preBarStyle && StatusBar.setBarStyle(this.preBarStyle,true)
                 }
@@ -169,7 +157,7 @@ class HomePage extends Component {
     }
 
     render() {
-        const {topOfHeader,topOfFlatList} = this.state
+        const {topOfHeader,topOfFlatList,heightOfHeader} = this.state
         const {trendingStore} = this.props
         const {currentPage,maxPage,pageScale,refreshing,languageColor,trendingRepositoryList,loading} = trendingStore
 
@@ -184,32 +172,32 @@ class HomePage extends Component {
                     </Animated.View>
 
 
-                    <Animated.View style={{...styles.flatListContainer,top:topOfFlatList}} >
+                    <Animated.View style={{top:topOfFlatList}} >
                         <FlatList data={data}
                                   initialNumToRender={3}
-                                ref={ref => this.flatList = ref}
-                                style={{width:Dimensions.get('window').width}}
-                                refreshControl={<RefreshControl
-                                    title={'loading'}
-                                    titleColor={languageColor}
-                                    colors={[languageColor]}
-                                    refreshing={refreshing}
-                                    onRefresh={() => this.getData(true)}
-                                    tintColor={"black"}
-                                />}
-                                ListEmptyComponent={this._ListEmptyComponent}
-                                onScroll={this._onPanGestureEvent}
-                                ListFooterComponent={() => {
-                                    if(currentPage >= maxPage || trendingRepositoryList.length === 0) return null
-                                    return this._listFooterComponent()
-                                }}
-                                onEndReached={() => this._getMoreData()}
-                                onEndReachedThreshold={0.1}
-                                renderItem={itemData => this.renderItem(itemData)}
-                                keyExtractor={item => "" + item.name + item.url}>
+                                  ref={ref => this.flatList = ref}
+                                  style={{width:Dimensions.get('window').width}}
+                                  refreshControl={<RefreshControl
+                                      title={'loading'}
+                                      titleColor={languageColor}
+                                      colors={[languageColor]}
+                                      refreshing={refreshing}
+                                      onRefresh={() => this.getData(true)}
+                                      tintColor={"black"}
+                                  />}
+                                  ListEmptyComponent={this._ListEmptyComponent}
+                                  onScroll={this._onPanGestureEvent}
+                                  ListFooterComponent={() => {
+                                      if(currentPage >= maxPage || trendingRepositoryList.length === 0) return null
+                                      return this._listFooterComponent()
+                                  }}
+                                  onEndReached={() => this._getMoreData()}
+                                  onEndReachedThreshold={0.1}
+                                  renderItem={itemData => this.renderItem(itemData)}
+                                  keyExtractor={item => "" + item.name + item.url}>
                         </FlatList>
-
                     </Animated.View>
+
                 </LoadingView>
             </View>
         )
@@ -235,15 +223,11 @@ const mapActions = dispatch => ({
 
 export default connect(mapState,mapActions)(HomePage)
 
-const styles = StyleSheet.create({
+const S = StyleSheet.create({
     currentLanguageSelectPaneContainer: {
         position: 'absolute',
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height
-    },
-    flatListContainer: {
-        position: 'absolute',
-        bottom: 0,
     },
     emptyComponentContainer: {
         right: 0,

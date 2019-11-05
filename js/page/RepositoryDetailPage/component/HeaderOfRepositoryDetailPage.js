@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 import {View, Text, StyleSheet, TouchableNativeFeedback, ActivityIndicator,DeviceEventEmitter} from 'react-native'
 import {Avatar,Divider} from 'react-native-elements'
@@ -14,7 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE} from "../../DeviceEventConstant";
 
 
-class HeaderOfRepositoryDetailPage extends Component{
+class HeaderOfRepositoryDetailPage extends PureComponent{
 
     constructor(props) {
         super(props)
@@ -28,7 +28,6 @@ class HeaderOfRepositoryDetailPage extends Component{
             fontColor: fontColor,
         }
     }
-
 
     _goBack = () => {
         this.props.navigation.goBack()

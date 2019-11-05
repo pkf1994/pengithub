@@ -45,6 +45,10 @@
             array[i].setAttribute("width",0)
         }
     }
+    window.addEventListener('scroll',() => {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        window.ReactNativeWebView.postMessage(scrollTop.toString())
+    })
     handleATag()
     handleSvgTag()
 </script>

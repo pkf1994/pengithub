@@ -1,16 +1,16 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {View,Animated,Linking,StyleSheet,ProgressBarAndroid,Dimensions,DeviceEventEmitter} from 'react-native'
 import {connect} from 'react-redux'
 import {FadeInTransition} from "../../../../component";
 import { WebView } from 'react-native-webview';
 import {EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE} from "../../../DeviceEventConstant";
+import {Util_Throtte} from "../../../../util";
 
-class ReadmeTopTabItemScreen extends Component{
+class ReadmeTopTabItemScreen extends PureComponent{
 
     constructor(props) {
         super(props)
         this.topAnimatedValue = new Animated.Value(0)
-
         this.state = {
             readmeData: undefined,
             heightOfHeaderOfRepositoryDetailPage: undefined,
@@ -80,6 +80,10 @@ class ReadmeTopTabItemScreen extends Component{
             '            array[i].setAttribute("width",0)\n' +
             '        }\n' +
             '    }\n' +
+            '    window.addEventListener(\'scroll\',() => {\n' +
+            '        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;\n' +
+            '        window.ReactNativeWebView.postMessage(scrollTop.toString())\n' +
+            '    })\n' +
             '    handleATag()\n' +
             '    handleSvgTag()\n' +
             '</script>\n'
@@ -90,7 +94,14 @@ class ReadmeTopTabItemScreen extends Component{
         Linking.openURL(event.url)
         return false
     }
-    _onNavigationStateChange = (event) => {
+
+    _onMessage = ({nativeEvent}) => {
+        const {hideHeader,showHeader} = this.props
+        if(nativeEvent.data !== "0") {
+            Util_Throtte(() => {hideHeader()},500,"hideHeader",this)
+            return
+        }
+        Util_Throtte(() => {showHeader()},500,"showHeader",this)
     }
 
     render() {
@@ -114,12 +125,11 @@ class ReadmeTopTabItemScreen extends Component{
                                     source={{html:HTML,baseUrl:svn_url + "/blob/" + default_branch + "/"}}
                                     javaScriptEnabled={true}
                                     domStorageEnabled={true}
+                                    onMessage={this._onMessage}
                                     scalesPageToFit={false}
-                                    onNavigationStateChange={this._onNavigationStateChange}
                                     onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest}
                                 />
                             </View>
-
                     }
                 </FadeInTransition>
         </View>

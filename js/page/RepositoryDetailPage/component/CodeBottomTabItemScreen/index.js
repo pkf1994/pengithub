@@ -31,7 +31,9 @@ class CodeBottomTabItemScreen extends Component{
                                                labelStyle={S.labelStyle}/>}
                 navigationState={this.state}
                 renderScene={SceneMap({
-                    ReadmeTopTabItemScreen: ReadmeTopTabItemScreen,
+                    ReadmeTopTabItemScreen: props => <ReadmeTopTabItemScreen {...props}
+                                                                             hideHeader={this.props.hideHeader}
+                                                                             showHeader={this.props.showHeader}/>,
                     FilesTopTabItemScreen: FilesTopTabItemScreen,
                 })}
                 onIndexChange={index => this.setState({ index })}

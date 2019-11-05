@@ -77,12 +77,10 @@ export default class DataStore {
             fetch(url,fetchOption).then(async (response) => {
                 if (response.ok) {
                     if(response.headers.map['content-type'] === CONTENT_TEPE_HTML) {
-                        console.log(response)
                         const data = await response.text()
                         const wrappedData = this._wrapData(data,response.headers.map)
                         resolve(wrappedData)
                     }else{
-                        console.log(response)
                         const data = await response.json()
                         const wrappedData = this._wrapData(data,response.headers.map)
                         resolve(wrappedData)

@@ -1,20 +1,25 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {LayoutAnimation, ScrollView, StatusBar, StyleSheet, View} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
 import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {createBottomTabNavigator,createAppContainer} from 'react-navigation'
+import {PanGestureHandler} from "react-native-gesture-handler";
 
+const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
 class RepositoryDetailPage extends Component{
 
     constructor(props) {
         super(props)
         this.state = {
-
+            topOfHeader: 0,
+            heightOfHeader: undefined,
+            heightOfHeaderWrapper: 'auto',
+            navigatorPaddingTop:0
         }
     }
 
@@ -26,7 +31,9 @@ class RepositoryDetailPage extends Component{
         if(this._bottomTabNavigator) return this._bottomTabNavigator
         return this._bottomTabNavigator = createAppContainer(createBottomTabNavigator({
             CodeTabItemScreen: {
-                screen: CodeBottomTabItemScreen,
+                screen: props => <CodeBottomTabItemScreen {...props}
+                                                          hideHeader={this._hideHeader}
+                                                          showHeader={this._showHeader}/>,
                 navigationOptions: {
                     tabBarLabel: 'code',
                     tabBarIcon: ({tintColor}) => <FontAwesome name="code" size={24} style={{color:tintColor}}/>
@@ -55,15 +62,46 @@ class RepositoryDetailPage extends Component{
         this.props.dispatchGetData(repositoryModel.owner,repositoryModel.repo)
     }
 
+    _onHeaderLayout = ({nativeEvent}) => {
+        if(!(nativeEvent.layout.height === 0)) {
+            LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
+            this.setState({
+                heightOfHeader: nativeEvent.layout.height
+            })
+        }
+    }
+
+    _hideHeader = () => {
+        if(this.state.topOfHeader === this.state.heightOfHeader) return
+        LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
+        this.setState({
+            topOfHeader: -this.state.heightOfHeader,
+            heightOfHeaderWrapper: 0,
+            navigatorPaddingTop: StatusBar.currentHeight,
+        })
+    }
+
+    _showHeader = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        this.setState({
+            topOfHeader:0,
+            heightOfHeaderWrapper: 'auto',
+            navigatorPaddingTop: 0,
+        })
+    }
+
     render() {
-       //const {repositoryModel} = params
-        const {repositoryDetailStore} = this.props
-        const {} = repositoryDetailStore
+        const {topOfHeader,heightOfHeaderWrapper,navigatorPaddingTop} = this.state
         const BottomTabNavigator = this._initBottomTab()
         return (
             <View style={{flex:1}}>
-                <HeaderOfRepositoryDetailPage/>
-                <BottomTabNavigator/>
+                <View style={{height:heightOfHeaderWrapper}}>
+                    <View  onLayout={this._onHeaderLayout} style={{top:topOfHeader}}>
+                        <HeaderOfRepositoryDetailPage/>
+                    </View>
+                </View>
+                <View style={{height: navigatorPaddingTop}}/>
+                <BottomTabNavigator testProps="testProps"/>
             </View>
         )
     }
