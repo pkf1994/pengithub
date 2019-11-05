@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {LayoutAnimation, ScrollView, StatusBar, StyleSheet, View} from 'react-native';
+import {LayoutAnimation, TouchableNativeFeedback, StatusBar, StyleSheet, View} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
 import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
@@ -19,7 +19,8 @@ class RepositoryDetailPage extends Component{
             topOfHeader: 0,
             heightOfHeader: undefined,
             heightOfHeaderWrapper: 'auto',
-            navigatorPaddingTop:0
+            navigatorPaddingTop:0,
+            showHeader: true
         }
     }
 
@@ -72,9 +73,10 @@ class RepositoryDetailPage extends Component{
     }
 
     _hideHeader = () => {
-        if(this.state.topOfHeader === this.state.heightOfHeader) return
+        if(!this.state.showHeader) return
         LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
         this.setState({
+            showHeader: false,
             topOfHeader: -this.state.heightOfHeader,
             heightOfHeaderWrapper: 0,
             navigatorPaddingTop: StatusBar.currentHeight,
@@ -82,8 +84,10 @@ class RepositoryDetailPage extends Component{
     }
 
     _showHeader = () => {
+        if(this.state.showHeader) return
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         this.setState({
+            showHeader: true,
             topOfHeader:0,
             heightOfHeaderWrapper: 'auto',
             navigatorPaddingTop: 0,
@@ -101,7 +105,9 @@ class RepositoryDetailPage extends Component{
                     </View>
                 </View>
                 <View style={{height: navigatorPaddingTop}}/>
-                <BottomTabNavigator testProps="testProps"/>
+                <BottomTabNavigator/>
+
+
             </View>
         )
     }

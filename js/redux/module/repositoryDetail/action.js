@@ -6,18 +6,22 @@ import {URL_REPOSITORY_CONTRIBUTORS,
 import {CommonExceptionHandler} from "../CommonExceptionHandler";
 var parse = require('parse-link-header');
 
-let getRepositoryInfoDataController = new AbortController()
-let getContributorsCountController = new AbortController()
-let getReadmeController = new AbortController()
-let getRepositoryInfoDataSignal = getRepositoryInfoDataController.signal
-let getContributorsCountSignal = getContributorsCountController.signal
-let getReadmeSignal = getReadmeController.signal
-
+let preGetRepositoryInfoDataController = undefined
+let preGetContributorsCountController = undefined
+let preGetReadmeController = undefined
 
 export const createSyncAction_getRepositoryInfoData = (option,meta) => {
     const url = URL_REPOSITORY_INFO(meta.owner, meta.repo)
     const contributorsUrl = URL_REPOSITORY_CONTRIBUTORS(meta.owner, meta.repo,{per_page:1})
     const readmeUrl = URL_REPOSITORY_README(meta.owner, meta.repo)
+
+    let getRepositoryInfoDataController = new AbortController()
+    let getContributorsCountController = new AbortController()
+    let getReadmeController = new AbortController()
+
+    let getRepositoryInfoDataSignal = getRepositoryInfoDataController.signal
+    let getContributorsCountSignal = getContributorsCountController.signal
+    let getReadmeSignal = getReadmeController.signal
 
     return dispatch => {
 
@@ -45,8 +49,9 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             }
         })
 
-        //getRepositoryInfoDataController.abort()
+        if(preGetRepositoryInfoDataController)preGetRepositoryInfoDataController.abort()
         DataStore.fetchData(url,{...option,fetchOption:{signal:getRepositoryInfoDataSignal}}).then(wrappedData => {
+            preGetRepositoryInfoDataController = undefined
             if(wrappedData.data) {
                 dispatch({
                     type: CommonAction.GET_DATA_SUCCESS,
@@ -67,8 +72,9 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             CommonExceptionHandler(e,dispatch,CommonActionId.GET_REPOSITORY_INFO_DATA)
         })
 
-        //getContributorsCountController.abort()
+        if(preGetContributorsCountController)preGetContributorsCountController.abort()
         DataStore.fetchData(contributorsUrl,{...option,fetchOption:{signal:getContributorsCountSignal}}).then(wrappedData => {
+            preGetContributorsCountController = undefined
             if(wrappedData.data) {
                 if(!wrappedData.headers.link) {
                     dispatch({
@@ -103,8 +109,9 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             CommonExceptionHandler(e,dispatch,CommonActionId.GET_CONTRIBUTORS_COUNT)
         })
 
-        //getReadmeController.abort()
+        if(preGetReadmeController)preGetReadmeController.abort()
         DataStore.fetchData(readmeUrl,{...option,refresh:true,fetchOption:{signal:getReadmeSignal,headers:{Accept:"application/vnd.github.VERSION.html"}}}).then(wrappedData => {
+            preGetReadmeController = undefined
             if(wrappedData.data) {
                 dispatch({
                     type: CommonAction.GET_DATA_SUCCESS,
@@ -125,4 +132,8 @@ export const createSyncAction_getRepositoryInfoData = (option,meta) => {
             CommonExceptionHandler(e,dispatch,CommonActionId.GET_REPOSITORY_README)
         })
     }
+
+    preGetRepositoryInfoDataController = getRepositoryInfoDataController
+    preGetContributorsCountController = getContributorsCountController
+    preGetReadmeController = getReadmeController
 }

@@ -1,10 +1,14 @@
 import React, {Component} from 'react'
-import {View, StyleSheet, Dimensions} from 'react-native'
+import {View, StyleSheet, Dimensions, DeviceEventEmitter} from 'react-native'
 import {createAppContainer} from 'react-navigation'
 import FilesTopTabItemScreen from './FilesTopTabItemScreen'
 import ReadmeTopTabItemScreen from './ReadmeTopTabItemScreen'
 import {createMaterialTopTabNavigator,MaterialTopTabBar} from 'react-navigation-tabs'
 import { TabView, SceneMap ,TabBar} from 'react-native-tab-view';
+import {
+    EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
+} from "../../../DeviceEventConstant";
 
 class CodeBottomTabItemScreen extends Component{
 
@@ -14,6 +18,12 @@ class CodeBottomTabItemScreen extends Component{
             { key: 'ReadmeTopTabItemScreen', title: 'README' },
             { key: 'FilesTopTabItemScreen', title: 'FILES' },
         ],
+    }
+
+    componentDidMount(): void {
+        const {hideHeader,showHeader} = this.props
+        DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,hideHeader)
+        DeviceEventEmitter.addListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,showHeader)
     }
 
     componentWillUnmount(): void {
@@ -31,9 +41,7 @@ class CodeBottomTabItemScreen extends Component{
                                                labelStyle={S.labelStyle}/>}
                 navigationState={this.state}
                 renderScene={SceneMap({
-                    ReadmeTopTabItemScreen: props => <ReadmeTopTabItemScreen {...props}
-                                                                             hideHeader={this.props.hideHeader}
-                                                                             showHeader={this.props.showHeader}/>,
+                    ReadmeTopTabItemScreen: ReadmeTopTabItemScreen,
                     FilesTopTabItemScreen: FilesTopTabItemScreen,
                 })}
                 onIndexChange={index => this.setState({ index })}

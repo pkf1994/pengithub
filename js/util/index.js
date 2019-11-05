@@ -8,6 +8,7 @@ import Util_StarNumberFormat from './StarNumberFormat'
 import Util_Throtte from './Throttle'
 import Util_UniqueArr from './UniqueArr'
 import Util_DecodeBase64 from './DecodeBase64'
+import {Util_DeepCopy} from './DeepCopy'
 
 export {
     Util_DateFormat,
@@ -16,6 +17,7 @@ export {
     Util_GetLightOrDarkerColor,
     Util_GetParamsFromNavigation,
     Util_RgbToHex,
+    Util_DeepCopy,
     Util_StarNumberFormat,
     Util_Throtte,
     Util_UniqueArr,

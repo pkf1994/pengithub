@@ -3,7 +3,10 @@ import {View,Animated,Linking,StyleSheet,ProgressBarAndroid,Dimensions,DeviceEve
 import {connect} from 'react-redux'
 import {FadeInTransition} from "../../../../component";
 import { WebView } from 'react-native-webview';
-import {EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE} from "../../../DeviceEventConstant";
+import {
+    EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE, EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
+} from "../../../DeviceEventConstant";
 import {Util_Throtte} from "../../../../util";
 
 class ReadmeTopTabItemScreen extends PureComponent{
@@ -19,6 +22,10 @@ class ReadmeTopTabItemScreen extends PureComponent{
     }
 
     componentDidUpdate() {
+    }
+
+    componentWillUnmount(): void {
+        console.log("ReadmeTopTabItemScreen: unmount")
     }
 
     static getDerivedStateFromProps = (nextProps,preState) => {
@@ -48,6 +55,7 @@ class ReadmeTopTabItemScreen extends PureComponent{
             '    }\n' +
             '    p,li{\n' +
             '        line-height: 1.7;\n' +
+            '\n' +
             '    }\n' +
             '    .oction, .oction-link{\n' +
             '        opacity: 0;\n' +
@@ -55,6 +63,30 @@ class ReadmeTopTabItemScreen extends PureComponent{
             '    .markdown-body h1, .markdown-body h2 {\n' +
             '        padding-bottom: .3em;\n' +
             '        border-bottom: 1px solid #eaecef;\n' +
+            '    }\n' +
+            '    blockquote {\n' +
+            '        padding: 0 1em;\n' +
+            '        color: #6a737d;\n' +
+            '        border-left: .25em solid #dfe2e5;\n' +
+            '    }\n' +
+            '    .markdown-body table tr {\n' +
+            '        background-color: #fff;\n' +
+            '        border-top: 1px solid #c6cbd1;\n' +
+            '    }\n' +
+            '    tr {\n' +
+            '        display: table-row;\n' +
+            '        vertical-align: inherit;\n' +
+            '        border-color: inherit;\n' +
+            '    }\n' +
+            '    .markdown-body table td, .markdown-body table th {\n' +
+            '        padding: 6px 13px;\n' +
+            '        border: 1px solid #dfe2e5;\n' +
+            '    }\n' +
+            '    .markdown-body table th {\n' +
+            '        font-weight: 600;\n' +
+            '    }\n' +
+            '    .markdown-body{\n' +
+            '        overflow-x: hidden;\n' +
             '    }\n' +
             '</style>\n' +
             '<script>\n' +
@@ -96,12 +128,15 @@ class ReadmeTopTabItemScreen extends PureComponent{
     }
 
     _onMessage = ({nativeEvent}) => {
-        const {hideHeader,showHeader} = this.props
         if(nativeEvent.data !== "0") {
-            Util_Throtte(() => {hideHeader()},500,"hideHeader",this)
+            Util_Throtte(() => {
+                DeviceEventEmitter.emit(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE)
+            },500,"hideHeader",this)
             return
         }
-        Util_Throtte(() => {showHeader()},500,"showHeader",this)
+        Util_Throtte(() => {
+            DeviceEventEmitter.emit(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE)
+        },500,"showHeader",this)
     }
 
     render() {
