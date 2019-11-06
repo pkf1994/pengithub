@@ -17,7 +17,7 @@ class SlideInTransition extends Component {
         if(this.state.children) {
             Animated.timing(this.animatedValue, {
                 toValue: 1,
-                duration: 400,
+                duration: this.duration,
                 useNativeDriver: true,
                 delay: this.delay
             }).start()

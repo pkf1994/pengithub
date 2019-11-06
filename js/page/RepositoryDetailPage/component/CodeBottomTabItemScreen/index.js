@@ -20,10 +20,6 @@ class CodeBottomTabItemScreen extends Component{
         ],
     }
 
-    componentWillUnmount(): void {
-        console.log("unmount: CodeBottomTabItemScreen")
-    }
-
 
     render() {
         return ( <View style={{flex:1}}>

@@ -1,5 +1,5 @@
 import {CommonAction,CommonActionId} from '../commonActionType'
-import {Util_UniqueArr} from '../../../util';
+import {Util_GetColorOfLanguage, Util_UniqueArr} from '../../../util';
 import { ToastAndroid } from 'react-native';
 
 export const TRENDING_LANGUAGE = {
@@ -40,6 +40,7 @@ const defaultState = {
     trendingRepositoryList: [],
     trendingLanguage: TRENDING_LANGUAGE.ANY,
     since: SINCE_TYPE.DAILY,
+    firstIn: true,
     loading: false,
     loadingMore: false,
     refreshing: false,
@@ -81,6 +82,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 trendingRepositoryList: action.payload.data,
                 languageColor: languageColor,
+                firstIn: false,
                 loading: false,
                 refreshing: false,
                 getDataReturnNull: true,
@@ -168,8 +170,8 @@ export default (state = defaultState, action) => {
         if(action.payload.id === CommonActionId.UPDATE_TRENDING_LANGUAGE) {
             return {
                 ...state,
-                trendingRepositoryList: [],
-                trendingLanguage: action.payload.trendingLanguage
+                trendingLanguage: action.payload.trendingLanguage,
+                languageColor: Util_GetColorOfLanguage(action.payload.trendingLanguage)
             }
         }
     }
@@ -178,7 +180,6 @@ export default (state = defaultState, action) => {
         if(action.payload.id === CommonActionId.UPDATE_TRENDING_SINCE) {
             return {
                 ...state,
-                trendingRepositoryList: [],
                 since: action.payload.since
             }
         }

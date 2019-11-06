@@ -29,9 +29,6 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
         }
     }
 
-    _goBack = () => {
-        this.props.navigation.goBack()
-    }
 
     _onLayout = ({nativeEvent}) => {
         DeviceEventEmitter.emit(EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE,nativeEvent)
@@ -39,7 +36,7 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
 
     _renderComprehensiveComponentOfHeader = () => {
         const {repositoryModel} = Util_GetParamsFromNavigation(this.props)
-        const {repositoryDetailStore} = this.props
+        const {repositoryDetailStore,goBack} = this.props
         const {languageColor,fontColor} = this.state
         const {repositoryInfo,contributorCount} = repositoryDetailStore
         return (
@@ -50,7 +47,7 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
                         {repositoryModel.repo}
                     </Text>
 
-                    <TouchableNativeFeedback  onPress={this._goBack}>
+                    <TouchableNativeFeedback  onPress={goBack}>
                         <View style={S.goBackBtn}>
                             <Icon name="left" size={16} color="gray"/>
                         </View>

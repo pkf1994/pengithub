@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {
     StyleSheet,
     View,
-    Animated,
+    Animated,Text
 } from 'react-native';
 import {connect} from 'react-redux'
 var Color = require('color');
@@ -16,8 +16,9 @@ import {createSyncAction_getTrendingData} from '../../../redux/module/trending/a
 
 import {URL} from '../index';
 import getFontColorByBackgroundColor from '../../../util/GetFontColorByBackgroundColor';
+import FadeInTransition from "../../../component/FadeInTransition";
 
-class HeaderOfHomePage extends Component{
+class HeaderOfHomePage extends PureComponent{
     constructor(props) {
         super(props)
         const {trendingStore} = props
@@ -28,14 +29,17 @@ class HeaderOfHomePage extends Component{
         }
     }
 
+    componentDidMount(): void {
+        console.log('mounted')
+    }
+
     _updateTrendingLanguage = (value) => {
         this.setState({
             trendingLanguage: value
         })
 
         this.props.dispatchUpdateTrendingLanguage(value)
-        const {since} = this.state
-        this._getData(value,since,false)
+
     }
 
     _updateTrendingSince = (value) => {
@@ -44,21 +48,16 @@ class HeaderOfHomePage extends Component{
         })
 
         this.props.dispatchUpdateTrendingSince(value)
-        const {trendingLanguage} = this.state
-        this._getData(trendingLanguage,value,false)
+
     }
 
-    _getData(language,since,refresh) {
-        const {trendingStore} = this.props
-        if(trendingStore.loading) return
-        this.props.dispatchGetData(refresh,language,since)
-    }
+
 
     _renderComprehensiveComponentOfHeader() {
         const {trendingLanguage,since} = this.state
         const {trendingStore} = this.props
-        const {loading,refreshing,loadingMore,languageColor,allLanguageList} = trendingStore
-        const pickerEnabled = !loading && !refreshing && !loadingMore
+        const {loading,refreshing,loadingMore,languageColor,allLanguageList,firstIn} = trendingStore
+        const pickerEnabled = !loading && !refreshing && !loadingMore && !firstIn
         var sinceList = []
         for(var _since in SINCE_TYPE) {
             sinceList.push(SINCE_TYPE[_since])
@@ -83,49 +82,53 @@ class HeaderOfHomePage extends Component{
         return (
             <View style={{flex:1}}>
                 <Animated.View style={{flexDirection:'row'}}>
-                    <FadeChangeText needToChangeWidth={true} duration={500} delay={textAnimateDelay} style={{color:subFontColor}}>
-                        {sinceStr}
-                    </FadeChangeText>
-                    <FadeChangeText duration={500} delay={textAnimateDelay} style={{color:subFontColor}}>
-                        {trendingLanguage === 'Any' ? '' : '  Trending'}
-                    </FadeChangeText>
+                    <FadeInTransition>
+                        <Text duration={500} delay={textAnimateDelay} style={{color:subFontColor}}>
+                            {sinceStr}
+                        </Text>
+                    </FadeInTransition>
+
+                    <FadeInTransition>
+                        <Text duration={500} delay={textAnimateDelay} style={{color:subFontColor}}>
+                            {trendingLanguage === 'Any' ? '' : '  Trending'}
+                        </Text>
+                    </FadeInTransition>
                 </Animated.View>
                 <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                    <FadeChangeText duration={500}
-                                    delay={textAnimateDelay}
-                                    style={{fontSize: trendingLanguage.length > 10 ? 30 : 34 ,fontWeight: "bold",color:fontColor,includeFontPadding: false}}
-                                    containerStyle={{flexShrink:-1}}
-                                    numberOfLines={1}
-                                    ellipsizeMode={'tail'}>
-                        {trendingLanguage === 'Any' ? 'Trending' : trendingLanguage}
-                    </FadeChangeText>
-
+                    <FadeInTransition>
+                        <Text style={{flexShrink:-1,fontSize: 34 ,fontWeight: "bold",color:fontColor,includeFontPadding: false}}
+                              numberOfLines={1}
+                              ellipsizeMode={'tail'}>
+                            {trendingLanguage === 'Any' ? 'Trending' : trendingLanguage}
+                        </Text>
+                    </FadeInTransition>
 
                     <View style={{flexDirection:'row'}}>
-                        <IconMaskedPicker  mode = 'dropdown'
-                                           icon={<AnimatedIcons
-                                               iconSet={AntDesign}
-                                               name="filter"
-                                               size={30}
-                                               style={{color: fontColor,opacity: pickerEnabled ? 1:0}}
-                                           />}
-                                           enabled={pickerEnabled}
-                                           selectedValue = {trendingLanguage}
-                                           pickerItemList={allLanguageList}
-                                           onValueChange = {this._updateTrendingLanguage}/>
-                        <IconMaskedPicker  mode = 'dropdown'
-                                           icon={<AnimatedIcons
-                                               iconSet={MaterialCommunityIcons}
-                                               name="calendar-range"
-                                               size={30}
-                                               style={{color: fontColor,opacity: pickerEnabled ? 1:0}}
-                                           />}
-                                           enabled={pickerEnabled}
-                                           selectedValue = {since}
-                                           pickerItemList={sinceList}
-                                           onValueChange = {this._updateTrendingSince}/>
+                        <FadeInTransition>
+                            <IconMaskedPicker  mode = 'dropdown'
+                                               icon={<AntDesign
+                                                   name="filter"
+                                                   size={30}
+                                                   style={{color: fontColor,opacity: pickerEnabled ? 1:0}}
+                                               />}
+                                               enabled={pickerEnabled}
+                                               selectedValue = {trendingLanguage}
+                                               pickerItemList={allLanguageList}
+                                               onValueChange = {this._updateTrendingLanguage}/>
+                        </FadeInTransition>
+                        <FadeInTransition>
+                            <IconMaskedPicker  mode = 'dropdown'
+                                               icon={<MaterialCommunityIcons
+                                                   name="calendar-range"
+                                                   size={30}
+                                                   style={{color: fontColor,opacity: pickerEnabled ? 1:0}}
+                                               />}
+                                               enabled={pickerEnabled}
+                                               selectedValue = {since}
+                                               pickerItemList={sinceList}
+                                               onValueChange = {this._updateTrendingSince}/>
+                        </FadeInTransition>
                     </View>
-
                 </View>
             </View>
         )
@@ -149,9 +152,6 @@ const mapState = (state) => ({
 })
 
 const mapActions = dispatch => ({
-    dispatchGetData: (refresh,trendingLanguage,since) => {
-        dispatch(createSyncAction_getTrendingData({refresh: refresh},{trendingLanguage:trendingLanguage,since:since}))
-    },
     dispatchUpdateTrendingLanguage: (trendingLanguage) => {
         dispatch({
             type: CommonAction.UPDATE_VALUE,

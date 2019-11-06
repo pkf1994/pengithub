@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {LayoutAnimation, TouchableNativeFeedback, StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
+import {LayoutAnimation,BackHandler,Animated, TouchableNativeFeedback, StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen,CustomBottomTabBar, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
 import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
@@ -12,6 +12,7 @@ import {
     EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../DeviceEventConstant";
+import ComprehensiveNavigationActionsBuilder from "../../navigation/ComprehensiveNavigationActions";
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
@@ -29,10 +30,22 @@ class RepositoryDetailPage extends Component{
     }
 
     componentDidMount(): void {
+        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._goBack);
         this._getData()
         DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
         DeviceEventEmitter.addListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._showHeader)
     }
+
+    componentWillUnmount(): void {
+        DeviceEventEmitter.removeAllListeners()
+    }
+
+    _goBack = () => {
+        ComprehensiveNavigationActionsBuilder.getComprehensiveNavigationActions().goBack(this.props.navigation)
+        this.backHandler.remove();
+        return true
+    }
+
 
     _initBottomTab() {
         if(this._bottomTabNavigator) return this._bottomTabNavigator
@@ -57,10 +70,6 @@ class RepositoryDetailPage extends Component{
                 activeTintColor: 'black'
             }
         }))
-    }
-
-    componentWillUnmount(): void {
-        console.log("unmount: RepositoryDetail_index")
     }
 
     _getData = () => {
@@ -106,13 +115,11 @@ class RepositoryDetailPage extends Component{
             <View style={{flex:1}}>
                 <View style={{height:heightOfHeaderWrapper}}>
                     <View  onLayout={this._onHeaderLayout} style={{top:topOfHeader}}>
-                        <HeaderOfRepositoryDetailPage/>
+                        <HeaderOfRepositoryDetailPage goBack={this._goBack}/>
                     </View>
                 </View>
                 <View style={{height: navigatorPaddingTop}}/>
                 <BottomTabNavigator/>
-
-
             </View>
         )
     }

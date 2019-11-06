@@ -1,11 +1,13 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {Animated} from 'react-native'
 
 
-class FadeInTransition extends Component {
+class FadeInTransition extends PureComponent {
     constructor(props) {
         super(props)
-        this.fadeInAnimatedValue = new Animated.Value(0)
+        this.animatedValue = new Animated.Value(0)
+        this.duration = props.duration ? props.duration : 400
+        this.delay = props.delay ? props.delay : 0
         this.state = {
             children: props.children,
             newChildren: props.children
@@ -13,13 +15,12 @@ class FadeInTransition extends Component {
     }
 
     componentDidMount(): void {
-        const duration = this.props.duration ? this.props.duration : 1000
         if(this.state.children) {
-            Animated.spring(this.fadeInAnimatedValue, {
+            Animated.timing(this.animatedValue, {
                 toValue: 1,
-                duration: duration,
+                duration: this.duration,
                 useNativeDriver: true,
-                //delay: delay ? delay : 0
+                delay: this.delay
             }).start()
         }
     }
@@ -34,51 +35,50 @@ class FadeInTransition extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot): void {
-        const duration = this.props.duration ? this.props.duration : 400
         if(this.state.children !== this.state.newChildren) {
             if(!this.state.newChildren) {
-                Animated.spring(this.fadeInAnimatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 0,
-                    duration: duration,
+                    duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
+                    delay:this.delay
                 }).start()
                 setTimeout(() => {
                     this.setState({
                         children: this.state.newChildren
                     })
-                },duration)
+                },this.duration)
                 return
             }else if(!this.state.children && this.state.newChildren) {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.fadeInAnimatedValue, {
+                Animated.spring(this.animatedValue, {
                     toValue: 1,
-                    duration: duration,
+                    duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
+                    delay:this.delay
                 }).start()
                 return
             }
 
-            Animated.spring(this.fadeInAnimatedValue, {
+            Animated.timing(this.animatedValue, {
                 toValue: 0,
-                duration: duration,
+                duration: this.duration,
                 useNativeDriver: true,
-                //delay: delay ? delay : 0
+                delay:this.delay
             }).start()
             setTimeout(() => {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.fadeInAnimatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 1,
-                    duration: duration,
+                    duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
+                    delay:this.delay
                 }).start()
-            },duration)
+            },this.duration)
         }
     }
 
@@ -87,7 +87,7 @@ class FadeInTransition extends Component {
 
         return (
             <Animated.View  style={{
-                opacity: this.fadeInAnimatedValue}}>
+                opacity: this.animatedValue}}>
                 {children}
             </Animated.View>
         )

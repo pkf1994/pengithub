@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {StyleSheet,TouchableNativeFeedback,Text,View,TouchableWithoutFeedback,LayoutAnimation} from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/AntDesign'
+import {FadeInTransition} from "../index";
 export default class CollapsibleText extends PureComponent{
 
     static propsType = {
@@ -17,6 +18,7 @@ export default class CollapsibleText extends PureComponent{
         super(props)
         this.state = {
             showAllText: false,
+            showLinearCover: false,
             heightOfContainer: 30,
             lineHeight: 22,
             canBeCollapse: true
@@ -32,10 +34,29 @@ export default class CollapsibleText extends PureComponent{
     }
 
     _triggerShowAllText = () => {
+        if(this.state.showAllText) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+            this.setState({
+                showAllText: !this.state.showAllText
+            })
+            setTimeout(() => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+                this.setState({
+                    showLinearCover: !this.state.showLinearCover
+                })
+            },300)
+            return
+        }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         this.setState({
-            showAllText: !this.state.showAllText
+            showLinearCover: !this.state.showLinearCover
         })
+        setTimeout(() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+            this.setState({
+                showAllText: !this.state.showAllText
+            })
+        },300)
     }
 
     _countDefaultLine = (children) => {
@@ -49,7 +70,7 @@ export default class CollapsibleText extends PureComponent{
 
     render() {
         const {children,containerStyle,fontSize,textStyle} = this.props
-        const {showAllText,heightOfContainer,lineHeight} = this.state
+        const {showAllText,heightOfContainer,lineHeight,showLinearCover} = this.state
         const {backgroundColor} = containerStyle
         const defaultLine = this._countDefaultLine(children)
         const canBeCollapse = heightOfContainer >  defaultLine * lineHeight
@@ -65,7 +86,7 @@ export default class CollapsibleText extends PureComponent{
                 </View>
                 {
                     canBeCollapse &&
-                    <LinearGradient start={{x: 0.5, y: 0}} end={{x: 0.9, y: 0}} style={[S.showAllButtonContainer,{height: lineHeight + 10}]} colors={['transparent', showAllText ? 'transparent' : backgroundColor ? backgroundColor :'#FFF']}>
+                    <LinearGradient start={{x: 0.5, y: 0}} end={{x: 0.9, y: 0}} style={[S.showAllButtonContainer,{height: lineHeight + 10}]} colors={['transparent', showLinearCover ? 'transparent' : backgroundColor ? backgroundColor :'#FFF']}>
                         <TouchableNativeFeedback  onPress={this._triggerShowAllText}>
                             <Icon name={showAllText ? 'up' : "down"} size={16} style={{opacity:0.5}}/>
                         </TouchableNativeFeedback>

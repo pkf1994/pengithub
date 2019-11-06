@@ -81,7 +81,7 @@ export default class CommonHeader extends Component{
 
         const {backgroundColor,containerStyle,hidden,leftComponent,rightComponent,centerComponent,comprehensiveComponent} = this.props
 
-        let statusBar = <StatusBar />
+        let statusBar = <StatusBar/>
 
         let content = hidden ? null :
             (

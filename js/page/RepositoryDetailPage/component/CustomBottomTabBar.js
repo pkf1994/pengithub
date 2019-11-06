@@ -24,6 +24,10 @@ class CustomBottomTabBar extends PureComponent{
         DeviceEventEmitter.addListener(EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,this._showBottomTabBar)
     }
 
+    componentWillUnmount(): void {
+        DeviceEventEmitter.removeAllListeners()
+    }
+
     _onLayout = ({nativeEvent}) => {
         if(!this.state.heightOfBottomTarBar){
             this.setState({
@@ -34,7 +38,6 @@ class CustomBottomTabBar extends PureComponent{
 
 
     _showBottomTabBar = () => {
-        console.log('show bottom tab bar')
         LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
         this.setState({
             bottomOfBottomTabBar: 0,
@@ -42,7 +45,6 @@ class CustomBottomTabBar extends PureComponent{
     }
 
     _hideBottomTabBar = () => {
-        console.log('hide bottom tab bar')
         LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
         this.setState({
             bottomOfBottomTabBar: -this.state.heightOfBottomTarBar,

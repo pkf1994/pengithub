@@ -23,15 +23,17 @@ export default class LoadingView extends Component{
     }
 
     render() {
-        const {children,style,indicatorSize} = this.props
+        const {children,style,indicatorSize,indicatorStyle,indicatorContainerStyle, color} = this.props
         const {loading} = this.state
         return (
             <View style={style}>
                 {children}
                 {
                     loading &&
-                    <Animated.View  pointerEvents='none' style={styles.loadingContainer}>
-                        <ActivityIndicator  size={indicatorSize ? indicatorSize : 'small'} color="black" />
+                    <Animated.View  pointerEvents='none' style={[styles.loadingContainer,indicatorContainerStyle]}>
+                        <View style={{...indicatorStyle}}>
+                            <ActivityIndicator   size={indicatorSize ? indicatorSize : 'small'} color={color?color:'black'} />
+                        </View>
                     </Animated.View>
                 }
             </View>

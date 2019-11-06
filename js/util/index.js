@@ -9,6 +9,7 @@ import Util_Throtte from './Throttle'
 import Util_UniqueArr from './UniqueArr'
 import Util_DecodeBase64 from './DecodeBase64'
 import {Util_DeepCopy} from './DeepCopy'
+import Util_ThrottleByDelay from './ThrottleByDelay'
 
 export {
     Util_DateFormat,
@@ -21,5 +22,6 @@ export {
     Util_StarNumberFormat,
     Util_Throtte,
     Util_UniqueArr,
-    Util_DecodeBase64
+    Util_DecodeBase64,
+    Util_ThrottleByDelay
 }

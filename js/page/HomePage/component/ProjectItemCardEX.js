@@ -1,10 +1,11 @@
 import React, {PureComponent} from 'react'
-import {View, StyleSheet, TouchableWithoutFeedback,TouchableOpacity, Animated} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Animated, StatusBar} from 'react-native';
 import {connect} from 'react-redux'
 import {Text,Avatar} from 'react-native-elements';
 import AwesomeButton from "react-native-really-awesome-button";
 import {Util_StarNumberFormat,Util_DateFormat} from '../../../util';
 import {SINCE_TYPE, TRENDING_LANGUAGE} from '../../../redux/module/trending/reducer';
+import ComprehensiveNavigationActionsBuilder from '../../../navigation/ComprehensiveNavigationActions'
 import {withNavigation} from 'react-navigation'
 var Color = require('color');
 
@@ -19,8 +20,6 @@ class ProjectItemCardEX extends PureComponent {
             metaFontColor: 'black',
             descriptFontColor: 'black',
             buttonColor: 'white',
-            lumia: 0,
-            oldlumia: 0.0002
         }
     }
 
@@ -82,25 +81,20 @@ class ProjectItemCardEX extends PureComponent {
             subMainColor: subMainColorHex,
             metaFontColor: metaFontColor,
             descriptFontColor: descriptFontColor,
-            oldlumia: dominanColor.luminosity(),
-            lumia: subMainColor.luminosity()
         })
     }
 
     _navigateToRepositoryDetailPage = () => {
         const {navigation,repositoryModel} = this.props
-        navigation.navigate(
-            'RepositoryDetailPage',
-            {
-                repositoryModel:{
-                    repo: repositoryModel.name,
-                    owner: repositoryModel.author,
-                    avatar: repositoryModel.avatar,
-                    language: repositoryModel.language,
-                    languageColor: repositoryModel.languageColor
-                }
+        ComprehensiveNavigationActionsBuilder.getComprehensiveNavigationActions().navigate(navigation,'RepositoryDetailPage',{
+            repositoryModel:{
+                repo: repositoryModel.name,
+                owner: repositoryModel.author,
+                avatar: repositoryModel.avatar,
+                language: repositoryModel.language,
+                languageColor: repositoryModel.languageColor
             }
-        )
+        },StatusBar._currentValues)
     }
 
     _animateIn = () => {
@@ -119,6 +113,21 @@ class ProjectItemCardEX extends PureComponent {
             duration: 200,
             useNativeDriver: true
         }).start();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot): void {
+        if(prevProps.trendingLanguage !== this.props.trendingLanguage){
+            if(this.props.trendingLanguage !== TRENDING_LANGUAGE.ANY) {
+                this.setState({
+                    dominanColor: '#e6e6e6',
+                    mainColor: '#EEEEEE',
+                    subMainColor: '#E6E6E6',
+                    metaFontColor: 'black',
+                    descriptFontColor: 'black',
+                    buttonColor: 'white',
+                })
+            }
+        }
     }
 
     render() {

@@ -16,9 +16,9 @@ class ReadmeTopTabItemScreen extends PureComponent{
 
     constructor(props) {
         super(props)
-        this.topAnimatedValue = new Animated.Value(0)
         this.state = {
             readmeData: undefined,
+            showHeaderAndBottomTabBarFlag: true,
             heightOfHeaderOfRepositoryDetailPage: undefined,
             HTML: undefined,
         }
@@ -27,9 +27,6 @@ class ReadmeTopTabItemScreen extends PureComponent{
     componentDidUpdate() {
     }
 
-    componentWillUnmount(): void {
-        console.log("ReadmeTopTabItemScreen: unmount")
-    }
 
     static getDerivedStateFromProps = (nextProps,preState) => {
         if(nextProps.repositoryDetailStore.readme.data !== preState.readmeData) {
@@ -132,16 +129,24 @@ class ReadmeTopTabItemScreen extends PureComponent{
 
     _onMessage = ({nativeEvent}) => {
         if(nativeEvent.data !== "0") {
+            if(!this.state.showHeaderAndBottomTabBarFlag) return
             Util_Throtte(() => {
                 DeviceEventEmitter.emit(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE)
                 DeviceEventEmitter.emit(EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE)
+                this.setState({
+                    showHeaderAndBottomTabBarFlag: false
+                })
             },500,"hideHeader",this)
             return
         }
+        if(this.state.showHeaderAndBottomTabBarFlag) return
         Util_Throtte(() => {
             DeviceEventEmitter.emit(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE)
             DeviceEventEmitter.emit(EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE)
-        },500,"showHeader",this)
+            this.setState({
+                showHeaderAndBottomTabBarFlag: true
+            })
+        },500,"hideHeader",this)
     }
 
     render() {
