@@ -30,10 +30,15 @@ class CodeBottomTabItemScreen extends Component{
                                                indicatorStyle={S.indicatorStyle}
                                                labelStyle={S.labelStyle}/>}
                 navigationState={this.state}
-                renderScene={SceneMap({
-                    ReadmeTopTabItemScreen: ReadmeTopTabItemScreen,
-                    FilesTopTabItemScreen: FilesTopTabItemScreen,
-                })}
+                renderScene={({ route, jumpTo }) => {
+                        switch (route.key) {
+                        case 'ReadmeTopTabItemScreen':
+                            return <ReadmeTopTabItemScreen jumpTo={jumpTo} repositoryModel={this.props.repositoryModel}/>;
+                        case 'FilesTopTabItemScreen':
+                            return <FilesTopTabItemScreen jumpTo={jumpTo} repositoryModel={this.props.repositoryModel}/>;
+                        }
+                    }
+                }
                 onIndexChange={index => this.setState({ index })}
                 initialLayout={{ width: Dimensions.get('window').width }}
             />
@@ -58,6 +63,7 @@ const S = StyleSheet.create({
         backgroundColor: 'gray'
     },
     labelStyle: {
+        fontWeight: 'bold',
         margin: 0,
         color: 'black',
         fontSize: 14,

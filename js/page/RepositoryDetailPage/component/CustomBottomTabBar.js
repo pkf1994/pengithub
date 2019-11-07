@@ -22,10 +22,15 @@ class CustomBottomTabBar extends PureComponent{
     componentDidMount(): void {
         DeviceEventEmitter.addListener(EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,this._hideBottomTabBar)
         DeviceEventEmitter.addListener(EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,this._showBottomTabBar)
+        this._getData()
     }
 
     componentWillUnmount(): void {
         DeviceEventEmitter.removeAllListeners()
+    }
+
+    _getData = () => {
+
     }
 
     _onLayout = ({nativeEvent}) => {

@@ -1,5 +1,4 @@
 import {CommonAction,CommonActionId} from '../commonActionType'
-import {Util_DecodeBase64} from '../../../util'
 const defaultState = {
     showHeader: true,
     showBottomTabBar: true,
@@ -15,6 +14,21 @@ const defaultState = {
     },
     contributorCount: {
         data: '-',
+        loading: false,
+        requestErr: false
+    },
+    branches: {
+        data: [],
+        loading: false,
+        requestErr: false
+    },
+    releases: {
+        data: [],
+        loading: false,
+        requestErr: false
+    },
+    contents: {
+        data: [],
         loading: false,
         requestErr: false
     }
@@ -60,6 +74,45 @@ export default (state = defaultState, action) => {
         }
     }
 
+    if(action.type === CommonAction.TRIGGER_LOADING) {
+        if(action.payload.id === CommonActionId.GET_BRANCHES) {
+            return {
+                ...state,
+                branches: {
+                    ...state.branches,
+                    loading:  action.payload.loading,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.TRIGGER_LOADING) {
+        if(action.payload.id === CommonActionId.GET_RELEASES) {
+            return {
+                ...state,
+                releases: {
+                    ...state.releases,
+                    loading:  action.payload.loading,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.TRIGGER_LOADING) {
+        if(action.payload.id === CommonActionId.GET_CONTENTS) {
+            return {
+                ...state,
+                contents: {
+                    ...state.contents,
+                    loading:  action.payload.loading,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
     if(action.type === CommonAction.GET_DATA_SUCCESS) {
         if(action.payload.id === CommonActionId.GET_REPOSITORY_INFO_DATA) {
             return {
@@ -94,6 +147,48 @@ export default (state = defaultState, action) => {
                 ...state,
                 readme: {
                     ...state.readme,
+                    data: action.payload.data,
+                    loading:  false,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_SUCCESS) {
+        if(action.payload.id === CommonActionId.GET_BRANCHES) {
+            return {
+                ...state,
+                branches: {
+                    ...state.branches,
+                    data: action.payload.data,
+                    loading:  false,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_SUCCESS) {
+        if(action.payload.id === CommonActionId.GET_RELEASES) {
+            return {
+                ...state,
+                releases: {
+                    ...state.releases,
+                    data: action.payload.data,
+                    loading:  false,
+                    requestErr: false
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_SUCCESS) {
+        if(action.payload.id === CommonActionId.GET_CONTENTS) {
+            return {
+                ...state,
+                contents: {
+                    ...state.contents,
                     data: action.payload.data,
                     loading:  false,
                     requestErr: false
@@ -135,6 +230,45 @@ export default (state = defaultState, action) => {
                 ...state,
                 readme: {
                     ...state.readme,
+                    loading: false,
+                    requestErr: true
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_FAIL) {
+        if(action.payload.id === CommonActionId.GET_BRANCHES) {
+            return {
+                ...state,
+                branches: {
+                    ...state.branches,
+                    loading: false,
+                    requestErr: true
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_FAIL) {
+        if(action.payload.id === CommonActionId.GET_RELEASES) {
+            return {
+                ...state,
+                releases: {
+                    ...state.releases,
+                    loading: false,
+                    requestErr: true
+                }
+            }
+        }
+    }
+
+    if(action.type === CommonAction.GET_DATA_FAIL) {
+        if(action.payload.id === CommonActionId.GET_CONTENTS) {
+            return {
+                ...state,
+                contents: {
+                    ...state.contents,
                     loading: false,
                     requestErr: true
                 }

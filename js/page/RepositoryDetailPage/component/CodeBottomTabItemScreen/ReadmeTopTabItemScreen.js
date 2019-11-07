@@ -6,11 +6,11 @@ import { WebView } from 'react-native-webview';
 import {
     EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
-    EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../../../DeviceEventConstant";
 import {Util_Throtte} from "../../../../util";
+import {createAsyncAction_getReadmeData} from "../../../../redux/module/repositoryDetail/action";
 
 class ReadmeTopTabItemScreen extends PureComponent{
 
@@ -24,7 +24,8 @@ class ReadmeTopTabItemScreen extends PureComponent{
         }
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
+        this._getData()
     }
 
 
@@ -37,6 +38,10 @@ class ReadmeTopTabItemScreen extends PureComponent{
         }
 
         return null
+    }
+
+    _getData = () => {
+        this.props.dispatch_getReadmeData(this.props.repositoryModel)
     }
 
     static _generateHTML = (readmeData) => {
@@ -156,7 +161,6 @@ class ReadmeTopTabItemScreen extends PureComponent{
         const {svn_url,default_branch} = data
         const {HTML} = this.state
         return <View style={S.container}>
-                <FadeInTransition>
                     {
                         readme.loading || repositoryInfo.loading ?
                             <ProgressBarAndroid  color="gray" styleAttr='Horizontal'
@@ -176,7 +180,6 @@ class ReadmeTopTabItemScreen extends PureComponent{
                                 />
                             </View>
                     }
-                </FadeInTransition>
         </View>
     }
 }
@@ -186,7 +189,12 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-
+    dispatch_getReadmeData: (repositoryModel) => {
+        dispatch(createAsyncAction_getReadmeData({},{
+            owner: repositoryModel.owner,
+            repo: repositoryModel.repo
+        }))
+    }
 })
 
 export default connect(mapState,mapActions)(ReadmeTopTabItemScreen)

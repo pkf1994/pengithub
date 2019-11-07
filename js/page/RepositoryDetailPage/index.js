@@ -1,13 +1,12 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {LayoutAnimation,BackHandler,Animated, TouchableNativeFeedback, StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
+import {LayoutAnimation,BackHandler,StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen,CustomBottomTabBar, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
-import {createSyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
+import {createAsyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import {createBottomTabNavigator,createAppContainer} from 'react-navigation'
-import {PanGestureHandler} from "react-native-gesture-handler";
 import {
     EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
@@ -49,9 +48,10 @@ class RepositoryDetailPage extends Component{
 
     _initBottomTab() {
         if(this._bottomTabNavigator) return this._bottomTabNavigator
+        const {repositoryModel} = getParamsFromNavigation(this.props)
         return this._bottomTabNavigator = createAppContainer(createBottomTabNavigator({
             CodeTabItemScreen: {
-                screen: CodeBottomTabItemScreen,
+                screen: props => <CodeBottomTabItemScreen {...props} repositoryModel={repositoryModel}/>,
                 navigationOptions: {
                     tabBarLabel: 'code',
                     tabBarIcon: ({tintColor}) => <FontAwesome name="code" size={24} style={{color:tintColor}}/>
@@ -131,7 +131,7 @@ const mapState = state => ({
 
 const mapActions = dispatch => ({
     dispatchGetData: (owner,repo) => {
-        dispatch(createSyncAction_getRepositoryInfoData({},{owner:owner,repo:repo}))
+        dispatch(createAsyncAction_getRepositoryInfoData({},{owner:owner,repo:repo}))
     }
 })
 

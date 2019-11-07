@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
-const CONTENT_TEPE_HTML = "application/vnd.github.VERSION.html; charset=utf-8"
-const CONTENT_TEPE_RAW = "application/vnd.github.VERSION.raw; charset=utf-8"
+export const CONTENT_TEPE_HTML = "application/vnd.github.VERSION.html; charset=utf-8"
+export const CONTENT_TEPE_RAW = "application/vnd.github.VERSION.raw; charset=utf-8"
 
 export default class DataStore {
 
@@ -25,7 +25,7 @@ export default class DataStore {
                     throw new Error("need to fetch from internet")
                 }
             }).catch((e) => {
-                DataStore.fetchNetData(url).then((wrappedData) => {
+                DataStore.fetchNetData(url,option.fetchOption).then((wrappedData) => {
                     resolve(wrappedData)
                     this.cacheData(url,wrappedData,()=>{})
                 }).catch((e) => {

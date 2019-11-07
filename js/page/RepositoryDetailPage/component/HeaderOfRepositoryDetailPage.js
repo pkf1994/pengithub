@@ -12,6 +12,7 @@ import {Util_GetLightOrDarkerColor,
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE} from "../../DeviceEventConstant";
+import {createAsyncAction_getContributorsCountData} from "../../../redux/module/repositoryDetail/action";
 
 
 class HeaderOfRepositoryDetailPage extends PureComponent{
@@ -27,6 +28,15 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
             subLanguageColor: subLanguageColor,
             fontColor: fontColor,
         }
+    }
+
+    componentDidMount(): void {
+        this._getData()
+    }
+
+    _getData = () => {
+        const {repositoryModel} = Util_GetParamsFromNavigation(this.props)
+        this.props.dispatch_getContributorsCount(repositoryModel)
     }
 
 
@@ -153,7 +163,12 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-
+    dispatch_getContributorsCount: (repositoryModel) => {
+        dispatch(createAsyncAction_getContributorsCountData({},{
+            owner: repositoryModel.owner,
+            repo: repositoryModel.repo
+        }))
+    }
 })
 
 export default connect(mapState,mapActions)(withNavigation(HeaderOfRepositoryDetailPage))
