@@ -14,12 +14,6 @@ export const createSyncAction_getTrendingData = (option,meta) => {
     }
 
     return dispatch => {
-        dispatch({
-            type: CommonAction.LOGGER_ACTION,
-            payload: {
-                url: url
-            }
-        })
         if(option.refresh){
             dispatch({
                 type: CommonAction.TRIGGER_LOADING,

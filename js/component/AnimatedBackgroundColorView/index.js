@@ -4,18 +4,18 @@ import {Animated} from 'react-native'
 export default class AnimatedBackgroundColorView extends Component{
     constructor(props) {
         super(props)
-        const {style} = props
+        const {style,duration} = props
+        this.duration = duration ? duration : 500
         this.state = {
             backgroundColor: style.backgroundColor,
             newBackgroundColor: style.backgroundColor,
-            animatedValue: new Animated.Value(0),
-            animatedBackgroundColor: style.backgroundColor
+            animatedBackgroundColor: style.backgroundColor,
+            animatedValue: new Animated.Value(0)
         }
     }
 
     static getDerivedStateFromProps(nextProps,preState) {
         if(nextProps.style.backgroundColor !== preState.backgroundColor) {
-            console.log()
             return {
                 newBackgroundColor: nextProps.style.backgroundColor,
                 animatedBackgroundColor: preState.animatedValue.interpolate({
@@ -32,12 +32,15 @@ export default class AnimatedBackgroundColorView extends Component{
         if(this.state.newBackgroundColor !== this.state.backgroundColor) {
             Animated.timing(this.state.animatedValue,{
                 toValue:1,
-                duration:this.props.duration
+                duration:this.duration
             }).start()
-            this.setState({
-                backgroundColor: this.state.newBackgroundColor,
-                animatedValue: new Animated.Value(0)
-            })
+            setTimeout(() => {
+                this.setState({
+                    backgroundColor: this.state.newBackgroundColor,
+                    animatedValue: new Animated.Value(0)
+                })
+            },this.duration)
+
         }
 
     }

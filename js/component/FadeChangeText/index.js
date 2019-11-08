@@ -8,7 +8,9 @@ export default class FadeChangeText extends PureComponent{
         this.fontColorAnimatedValue = new Animated.Value(0)
         this.textWidthAnimatedValue = new Animated.Value(0)
         this.fontSizeAnimatedValue = new Animated.Value(0)
-        const {children,style} = props
+        const {children,style,duration,delay} = props
+        this.duration = duration ? duration : 500
+        this.delay = delay ? delay : 0
         this.state = {
             children: children,
             newChildren: children,
@@ -65,13 +67,12 @@ export default class FadeChangeText extends PureComponent{
     }
 
     componentDidUpdate(prevProps, prevState, snapshot): void {
-        const {delay,duration} = this.props
 
         if(this.state.newChildren !== this.state.children) {
 
             Animated.timing(this.fadeAnimatedValue,{
                 toValue:0,
-                duration:duration,
+                duration:this.duration,
                 useNativeDriver: true
             }).start()
 
@@ -81,7 +82,7 @@ export default class FadeChangeText extends PureComponent{
                 })
                 Animated.timing(this.fadeAnimatedValue,{
                     toValue:1,
-                    duration:duration,
+                    duration:this.duration,
                     useNativeDriver: true
                 }).start()
                if(!this.props.needToChangeWidth) return
@@ -99,8 +100,8 @@ export default class FadeChangeText extends PureComponent{
                             textWidth: width
                         })
                     })
-                },duration)
-            },duration)
+                },this.duration)
+            },this.duration)
         }
 
         if(this.state.newColor !== this.state.color) {
@@ -113,12 +114,12 @@ export default class FadeChangeText extends PureComponent{
             })
             Animated.timing(this.fontColorAnimatedValue,{
                 toValue: 1,
-                duration: duration,
-                delay: delay ? delay : 0
+                duration: this.duration,
+                delay: this.delay
             }).start()
             setTimeout(() => {
                 this.fontColorAnimatedValue = new Animated.Value(0)
-            },duration)
+            },this.duration)
         }
 
         if(this.state.newFontSize !== this.state.fontSize) {
@@ -131,12 +132,12 @@ export default class FadeChangeText extends PureComponent{
             })
             Animated.timing(this.fontSizeAnimatedValue,{
                 toValue: 1,
-                duration: duration,
-                delay: delay ? delay : 0
+                duration: this.duration,
+                delay: this.delay
             }).start()
             setTimeout(() => {
                 this.fontSizeAnimatedValue = new Animated.Value(0)
-            },duration)
+            },this.duration)
         }
     }
 
@@ -155,19 +156,19 @@ export default class FadeChangeText extends PureComponent{
         const {containerStyle,style,needToChangeWidth} = this.props
         return (
                 needToChangeWidth ?
-                    <Animated.View style={{...containerStyle,width:textWidth,overflow:'hidden'}}>
-                        <Animated.View style={{opacity: this.fadeAnimatedValue,position:'absolute'}}>
-                            <Animated.Text onLayout={this._onLayout} ref={ref => this.textRef = ref} {...this.props} style={{...style,color:animatedFontColor,fontSize: animatedFontSize,position:'absolute'}}>
-                                {children}
-                            </Animated.Text>
-                        </Animated.View>
-                    </Animated.View>
-                    :
-                    <Animated.View style={{...containerStyle,opacity: this.fadeAnimatedValue}}>
-                        <Animated.Text{...this.props} style={{...style,color:animatedFontColor,fontSize: animatedFontSize}}>
+                <Animated.View style={{...containerStyle,width:textWidth,overflow:'hidden'}}>
+                    <Animated.View style={{opacity: this.fadeAnimatedValue,position:'absolute'}}>
+                        <Animated.Text onLayout={this._onLayout} ref={ref => this.textRef = ref} {...this.props} style={{...style,color:animatedFontColor,fontSize: animatedFontSize,position:'absolute'}}>
                             {children}
                         </Animated.Text>
                     </Animated.View>
+                </Animated.View>
+                :
+                <Animated.View style={{...containerStyle,opacity: this.fadeAnimatedValue}}>
+                    <Animated.Text{...this.props} style={{...style,color:animatedFontColor,fontSize: animatedFontSize}}>
+                        {children}
+                    </Animated.Text>
+                </Animated.View>
         )
     }
 }

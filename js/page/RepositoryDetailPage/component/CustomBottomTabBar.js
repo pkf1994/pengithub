@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import {DeviceEventEmitter, LayoutAnimation, View} from 'react-native'
+import {DeviceEventEmitter, LayoutAnimation, View, StyleSheet} from 'react-native'
 import {connect} from 'react-redux'
 import { BottomTabBar } from 'react-navigation';
 import {
@@ -60,7 +60,7 @@ class CustomBottomTabBar extends PureComponent{
         const {bottomOfBottomTabBar} = this.state
         return (
                 <View style={{position:'absolute',bottom:bottomOfBottomTabBar,left:0,right:0}} onLayout={this._onLayout}>
-                    <BottomTabBar {...this.props}/>
+                    <BottomTabBar {...this.props} labelStyle={S.labelStyle} style={S.bottomTabBar} tabStyle={S.tabStyle}/>
                 </View>
         )
     }
@@ -72,3 +72,11 @@ const mapState = state => ({
 })
 
 export default connect(mapState,null)(CustomBottomTabBar)
+
+const S = StyleSheet.create({
+    bottomTabBar: {
+        height: 60,
+        paddingVertical: 5,
+        elevation: 10
+    }
+})

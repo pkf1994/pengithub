@@ -1,12 +1,11 @@
 import React, {PureComponent} from 'react'
 import {Animated} from 'react-native'
 
-
 class FadeInTransition extends PureComponent {
     constructor(props) {
         super(props)
         this.animatedValue = new Animated.Value(0)
-        this.duration = props.duration ? props.duration : 400
+        this.duration = props.duration ? props.duration : 500
         this.delay = props.delay ? props.delay : 0
         this.state = {
             children: props.children,
@@ -35,13 +34,15 @@ class FadeInTransition extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot): void {
-        if(this.state.children !== this.state.newChildren) {
+        if(this.state.children === this.state.newChildren) return
+        const equality = JSON.stringify(prevProps.equalityKey) === JSON.stringify(this.props.equalityKey)
+        if(!equality) {
             if(!this.state.newChildren) {
                 Animated.timing(this.animatedValue, {
                     toValue: 0,
                     duration: this.duration,
                     useNativeDriver: true,
-                    delay:this.delay
+                    //delay: delay ? delay : 0
                 }).start()
                 setTimeout(() => {
                     this.setState({
@@ -49,15 +50,17 @@ class FadeInTransition extends PureComponent {
                     })
                 },this.duration)
                 return
-            }else if(!this.state.children && this.state.newChildren) {
+            }
+
+            if(!this.state.children && this.state.newChildren) {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.animatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
-                    delay:this.delay
+                    //delay: delay ? delay : 0
                 }).start()
                 return
             }
@@ -66,7 +69,7 @@ class FadeInTransition extends PureComponent {
                 toValue: 0,
                 duration: this.duration,
                 useNativeDriver: true,
-                delay:this.delay
+                //delay: delay ? delay : 0
             }).start()
             setTimeout(() => {
                 this.setState({
@@ -76,9 +79,13 @@ class FadeInTransition extends PureComponent {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
-                    delay:this.delay
+                    //delay: delay ? delay : 0
                 }).start()
             },this.duration)
+        }else {
+            this.setState({
+                children: this.state.newChildren
+            })
         }
     }
 

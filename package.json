@@ -16,6 +16,8 @@
     "color": "^3.1.2",
     "colorthief": "^2.3.0",
     "core-js": "^2.6.8",
+    "devalue": "^2.0.0",
+    "fast-safe-stringify": "^2.0.7",
     "js-base64": "^2.5.1",
     "markdown-it": "^10.0.0",
     "moment": "2.24.0",

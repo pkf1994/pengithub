@@ -53,6 +53,7 @@ class HomePage extends PureComponent {
         const trendingStore =this.props.trendingStore
         if(preTrendingStore.since !== trendingStore.since || preTrendingStore.trendingLanguage !== trendingStore.trendingLanguage) {
             this.getData()
+            this.flatList.scrollToOffset({offset:0,animated:false})
         }
     }
 
@@ -77,7 +78,7 @@ class HomePage extends PureComponent {
         const {currentPage,pageScale,loading,trendingLanguage} = trendingStore
 
         const item = itemData.item
-        const delay = (itemData.index - (currentPage - 1) * pageScale) * 50
+        const delay = (itemData.index - (currentPage - 1) * pageScale + 1) * 50
 
         return <SlideInTransition delay={delay}>
             <View style={{opacity: loading?0:1}}>

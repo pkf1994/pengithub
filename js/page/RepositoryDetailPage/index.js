@@ -91,7 +91,7 @@ class RepositoryDetailPage extends Component{
         LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
         this.setState({
             showHeader: false,
-            topOfHeader: -this.state.heightOfHeader,
+            topOfHeader: - this.state.heightOfHeader,
             heightOfHeaderWrapper: 0,
             navigatorPaddingTop: StatusBar.currentHeight,
         })

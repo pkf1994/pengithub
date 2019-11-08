@@ -311,8 +311,7 @@ const styles = StyleSheet.create({
     starNumber: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginRight: 3,
-        paddingRight: 8,
+        paddingRight: 5,
         paddingLeft: 8,
         paddingTop: 3,
         paddingBottom: 3,

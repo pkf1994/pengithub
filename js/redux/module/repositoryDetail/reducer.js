@@ -189,7 +189,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 contents: {
                     ...state.contents,
-                    data: action.payload.data,
+                    data: sortContents(action.payload.data),
                     loading:  false,
                     requestErr: false
                 }
@@ -286,4 +286,18 @@ export default (state = defaultState, action) => {
     }
 
     return state
+}
+
+
+function sortContents(contents) {
+    let dirArray = []
+    let fileArray = []
+    contents.forEach((item) => {
+        if(item.type === 'dir') {
+            dirArray.push(item)
+        } else {
+            fileArray.push(item)
+        }
+    })
+    return dirArray.concat(fileArray)
 }

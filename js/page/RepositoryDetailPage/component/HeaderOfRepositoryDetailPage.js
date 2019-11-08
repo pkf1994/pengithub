@@ -44,12 +44,15 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
         DeviceEventEmitter.emit(EVENTS_LAYOUT_HEADER_OF_REPOSITORY_DETAIL_PAGE,nativeEvent)
     }
 
-    _renderComprehensiveComponentOfHeader = () => {
+
+    render() {
         const {repositoryModel} = Util_GetParamsFromNavigation(this.props)
         const {repositoryDetailStore,goBack} = this.props
-        const {languageColor,fontColor} = this.state
+        const {languageColor,backgroundColor,fontColor} = this.state
         const {repositoryInfo,contributorCount} = repositoryDetailStore
-        return (
+        return  <CommonHeader
+                               containerStyle={S.headerContainerStyle}
+                              backgroundColor={backgroundColor}>
             <View style={{flex:1}} onLayout={this._onLayout}>
 
                 <View style={S.row1}>
@@ -147,14 +150,7 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
                 </StretchInLoadedView>
 
             </View>
-        )
-    }
-
-    render() {
-        const {backgroundColor} = this.state
-        return  <CommonHeader comprehensiveComponent={this._renderComprehensiveComponentOfHeader()}
-                               containerStyle={S.headerContainerStyle}
-                               backgroundColor={backgroundColor}/>
+        </CommonHeader>
     }
 }
 

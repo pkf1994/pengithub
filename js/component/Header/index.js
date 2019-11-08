@@ -29,7 +29,6 @@ export default class CommonHeader extends Component{
         leftComponent: PropTypes.element,
         rightComponent: PropTypes.element,
         centerComponent: PropTypes.element,
-        comprehensiveComponent: PropTypes.element,
         hideStatusBar: PropTypes.bool
     }
 
@@ -79,15 +78,13 @@ export default class CommonHeader extends Component{
 
     render(){
 
-        const {backgroundColor,containerStyle,hidden,leftComponent,rightComponent,centerComponent,comprehensiveComponent} = this.props
-
+        const {backgroundColor,containerStyle,hidden,leftComponent,rightComponent,centerComponent,children} = this.props
         let statusBar = <StatusBar/>
-
         let content = hidden ? null :
             (
-                comprehensiveComponent ?
+                children ?
                     <View style={styles.navBar}>
-                        {comprehensiveComponent}
+                        {children}
                     </View>
                     :
                     <View style={styles.navBar}>

@@ -74,14 +74,9 @@ const defaultState = {
 export default (state = defaultState, action) => {
     if(action.type === CommonAction.GET_DATA_SUCCESS) {
         if(action.payload.id === CommonActionId.GET_TRENDING_DATA){
-            var languageColor = "white"
-            if(action.payload.trendingLanguage !== 'Any') {
-                languageColor = action.payload.data[0].languageColor
-            }
             return {
                 ...state,
                 trendingRepositoryList: action.payload.data,
-                languageColor: languageColor,
                 firstIn: false,
                 loading: false,
                 refreshing: false,
@@ -116,17 +111,19 @@ export default (state = defaultState, action) => {
                 loading: false,
                 refreshing: false,
                 getDataReturnNull: true,
+                trendingRepositoryList: [],
                 languageColor: 'white'
             }
         }
     }
 
     if(action.type === CommonAction.GET_MORE_DATA_SUCCESS) {
-        if(action.payload.id !== CommonActionId.GET_TRENDING_DATA) return state
-        return {
-            ...state,
-            currentPage: state.currentPage + 1,
-            loadingMore: false
+        if(action.payload.id === CommonActionId.GET_TRENDING_DATA){
+            return {
+                ...state,
+                currentPage: state.currentPage + 1,
+                loadingMore: false
+            }
         }
     }
 
@@ -162,6 +159,7 @@ export default (state = defaultState, action) => {
         return {
             ...state,
             networkErr: true,
+            trendingRepositoryList: [],
             loading: false
         }
     }

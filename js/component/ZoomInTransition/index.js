@@ -47,6 +47,7 @@ class ZoomInTransition extends Component {
                         children: this.state.newChildren
                     })
                 },this.duration)
+                return
             }
 
             if(!this.state.children && this.state.newChildren) {
@@ -59,6 +60,7 @@ class ZoomInTransition extends Component {
                     useNativeDriver: true,
                     //delay: delay ? delay : 0
                 }).start()
+                return
             }
 
             this.setState({
