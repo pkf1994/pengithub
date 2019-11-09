@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {LayoutAnimation,BackHandler,StatusBar, StyleSheet, View, DeviceEventEmitter} from 'react-native';
+import {LayoutAnimation,BackHandler,StatusBar, StyleSheet, View,Text, DeviceEventEmitter,Animated} from 'react-native';
 import {CodeBottomTabItemScreen,IssuesBottomTabItemScreen,CustomBottomTabBar, HeaderOfRepositoryDetailPage} from './component'
 import getParamsFromNavigation from '../../util/GetParamsFromNavigation';
 import {createAsyncAction_getRepositoryInfoData} from '../../redux/module/repositoryDetail/action';
@@ -12,6 +12,7 @@ import {
     EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../DeviceEventConstant";
 import ComprehensiveNavigationActionsBuilder from "../../navigation/ComprehensiveNavigationActions";
+import {ROUTES_KEY_ReadmeTopTabItemScreen} from "./component/CodeBottomTabItemScreen";
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
@@ -19,9 +20,10 @@ class RepositoryDetailPage extends Component{
 
     constructor(props) {
         super(props)
+        this.scrollMappingAnimatedValue = new Animated.Value(0)
+        this.heightOfHeader = undefined
         this.state = {
             topOfHeader: 0,
-            heightOfHeader: undefined,
             heightOfHeaderWrapper: 'auto',
             navigatorPaddingTop:0,
             showHeader: true
@@ -29,6 +31,7 @@ class RepositoryDetailPage extends Component{
     }
 
     componentDidMount(): void {
+        console.log('repository detail page did mount')
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._goBack);
         this._getData()
         DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
@@ -36,32 +39,41 @@ class RepositoryDetailPage extends Component{
     }
 
     componentWillUnmount(): void {
-        DeviceEventEmitter.removeAllListeners()
+        console.log('repository detail page will unmount')
+        this.backHandler.remove();
+        DeviceEventEmitter.removeListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
+        DeviceEventEmitter.removeListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._showHeader)
     }
 
     _goBack = () => {
+        console.log('try to go back')
         ComprehensiveNavigationActionsBuilder.getComprehensiveNavigationActions().goBack(this.props.navigation)
-        this.backHandler.remove();
         return true
     }
 
-
-    _initBottomTab() {
+    _initBottomTab = () => {
         if(this._bottomTabNavigator) return this._bottomTabNavigator
         const {repositoryModel} = getParamsFromNavigation(this.props)
         return this._bottomTabNavigator = createAppContainer(createBottomTabNavigator({
             CodeTabItemScreen: {
-                screen: props => <CodeBottomTabItemScreen {...props} repositoryModel={repositoryModel}/>,
+                screen: props => <CodeBottomTabItemScreen {...props}
+                                                          updateAnimatedInterpolate={this.updateAnimatedInterpolate}
+                                                          scrollMappingAnimatedValue={this.scrollMappingAnimatedValue}
+                                                          repositoryModel={repositoryModel}/>,
                 navigationOptions: {
                     tabBarLabel: 'code',
-                    tabBarIcon: ({tintColor}) => <FontAwesome name="code" size={24} style={{color:tintColor}}/>
+                    tabBarIcon: ({tintColor}) => <FontAwesome name="code"
+                                                              size={24}
+                                                              style={{color:tintColor}}/>
                 }
             },
             IssuesTabItemScreen: {
                 screen: IssuesBottomTabItemScreen,
                 navigationOptions: {
                     tabBarLabel: 'issues',
-                    tabBarIcon: ({tintColor}) => <AntDesign name="exclamationcircleo" size={22} style={{color:tintColor}}/>
+                    tabBarIcon: ({tintColor}) => <AntDesign name="exclamationcircleo"
+                                                            size={22}
+                                                            style={{color:tintColor}}/>
                 }
             }
         },{
@@ -77,12 +89,26 @@ class RepositoryDetailPage extends Component{
         this.props.dispatchGetData(repositoryModel.owner,repositoryModel.repo)
     }
 
-    _onHeaderLayout = ({nativeEvent}) => {
-        if(!(nativeEvent.layout.height === 0)) {
-            LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
-            this.setState({
-                heightOfHeader: nativeEvent.layout.height
+    updateAnimatedInterpolate = () => {
+
+        this.setState({
+            heightOfHeaderWrapper: this.scrollMappingAnimatedValue.interpolate({
+                inputRange: [0,270,271,280],
+                outputRange: [this.heightOfHeader,0,0,0]
+            }),
+            topOfHeader: this.scrollMappingAnimatedValue.interpolate({
+                inputRange: [0,270,271,280],
+                outputRange: [0,-this.heightOfHeader,-this.heightOfHeader,-this.heightOfHeader]
             })
+        })
+    }
+
+    _onHeaderLayout = ({nativeEvent}) => {
+        if(nativeEvent.layout.height !== 0) {
+            this.heightOfHeader = nativeEvent.layout.height
+            const {routesKey} = this.props.repositoryDetailStore
+            if(routesKey === ROUTES_KEY_ReadmeTopTabItemScreen) return
+            this.updateAnimatedInterpolate()
         }
     }
 
@@ -91,7 +117,7 @@ class RepositoryDetailPage extends Component{
         LayoutAnimation.configureNext(NEXT_LAYOUTANIAMTION)
         this.setState({
             showHeader: false,
-            topOfHeader: - this.state.heightOfHeader,
+            topOfHeader: - this.heightOfHeader,
             heightOfHeaderWrapper: 0,
             navigatorPaddingTop: StatusBar.currentHeight,
         })
@@ -113,13 +139,15 @@ class RepositoryDetailPage extends Component{
         const BottomTabNavigator = this._initBottomTab()
         return (
             <View style={{flex:1}}>
-                <View style={{height:heightOfHeaderWrapper}}>
-                    <View  onLayout={this._onHeaderLayout} style={{top:topOfHeader}}>
+                <Animated.View style={{height:heightOfHeaderWrapper}}>
+                    <Animated.View onLayout={this._onHeaderLayout}
+                                   style={{top:topOfHeader}}>
                         <HeaderOfRepositoryDetailPage goBack={this._goBack}/>
-                    </View>
-                </View>
+                    </Animated.View>
+                </Animated.View>
                 <View style={{height: navigatorPaddingTop}}/>
                 <BottomTabNavigator/>
+
             </View>
         )
     }
@@ -138,31 +166,10 @@ const mapActions = dispatch => ({
 export default connect(mapState,mapActions)(RepositoryDetailPage)
 
 const S = StyleSheet.create({
-    countRow: {
-        flexDirection:'row',
-        justifyContent: 'space-between',
-        alignItems:'stretch',
-        /*  backgroundColor: '#F7F7F7',
-          borderRadius: 10,*/
-        /*borderTopWidth: 1,
-        borderBottomWidth: 1,
-        borderColor: 'gray'*/
-        paddingTop: 5,
-        paddingHorizontal: 5
-    },
-    countItem: {
-        flex:1,
-        alignItems:'center'
-    },
-    countItemText: {
-        fontSize: 20,
-        lineHeight: 30,
-        fontWeight: 'bold'
-    },
-    countItemLabel: {
-        fontSize:12,
-        color: '#808080',
-        includeFontPadding:false
+    headerContainer: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        left: 0
     }
-
 })

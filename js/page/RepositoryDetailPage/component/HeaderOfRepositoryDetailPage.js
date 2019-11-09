@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {PureComponent,Fragment} from 'react'
 import {connect} from 'react-redux'
 import {View, Text, StyleSheet, TouchableNativeFeedback, ActivityIndicator,DeviceEventEmitter} from 'react-native'
 import {Avatar,Divider} from 'react-native-elements'
@@ -75,13 +75,13 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
                             }
                         </ZoomInTransition>
 
-                        <ZoomInTransition duration={500}>
+                        <ZoomInTransition equalityKey={repositoryInfo.loading} duration={500}>
                             {
                                 repositoryInfo.loading && <ActivityIndicator color="gray" style={{marginLeft:5}}/>
                             }
                         </ZoomInTransition>
 
-                        <ZoomInTransition duration={500}>
+                        <ZoomInTransition equalityKey={repositoryInfo.loading} duration={500}>
                             {
                                 repositoryInfo.data.license && !repositoryInfo.loading &&
                                 <Badge containerStyle={{backgroundColor: "#eeeeee",marginLeft:5}}>
@@ -112,13 +112,20 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
                         {repositoryModel.owner}
                     </Text>
                 </View>
+
                 <StretchInLoadedView loading={repositoryInfo.loading}>
 
-                    <CollapsibleText containerStyle={{padding: 10}}
-                                     textStyle={{fontWeight:'100',color: '#5E5E5E'}}>
-                        &nbsp;&nbsp;&nbsp;{repositoryInfo.data.description}
-                    </CollapsibleText>
-                    <Divider />
+                    {
+                        repositoryInfo.data.description && repositoryInfo.data.description.trim() !== '' &&
+                        <Fragment>
+                            <CollapsibleText containerStyle={{padding: 10,paddingTop:0}}
+                                             textStyle={{fontWeight:'100',color: '#5E5E5E'}}>
+                                &nbsp;&nbsp;&nbsp;{repositoryInfo.data.description}
+                            </CollapsibleText>
+                            <Divider />
+                        </Fragment>
+                    }
+
 
                     <View style={S.countRow}>
                         <TouchableNativeFeedback>
@@ -195,7 +202,7 @@ const S = StyleSheet.create({
     row2: {
         flexDirection: 'row',
        // backgroundColor: 'blue',
-        marginTop: 5
+        marginVertical: 5
     },
     row3: {
         marginTop: 10,

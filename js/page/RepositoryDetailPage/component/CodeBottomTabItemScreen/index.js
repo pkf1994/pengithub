@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {View, StyleSheet, Dimensions, DeviceEventEmitter} from 'react-native'
 import {createAppContainer} from 'react-navigation'
+import {connect} from 'react-redux'
 import FilesTopTabItemScreen from './FilesTopTabItemScreen'
 import ReadmeTopTabItemScreen from './ReadmeTopTabItemScreen'
 import {createMaterialTopTabNavigator,MaterialTopTabBar} from 'react-navigation-tabs'
@@ -9,19 +10,32 @@ import {
     EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
     EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../../../DeviceEventConstant";
+import {CommonAction, CommonActionId} from "../../../../redux/module/commonActionType";
+
+export const ROUTES_KEY_ReadmeTopTabItemScreen = "ReadmeTopTabItemScreen"
+export const ROUTES_KEY_FilesTopTabItemScreen = "FilesTopTabItemScreen"
 
 class CodeBottomTabItemScreen extends Component{
 
     state = {
         index: 0,
         routes: [
-            { key: 'ReadmeTopTabItemScreen', title: 'README' },
-            { key: 'FilesTopTabItemScreen', title: 'FILES' },
+            { key: ROUTES_KEY_ReadmeTopTabItemScreen, title: 'README' },
+            { key: ROUTES_KEY_FilesTopTabItemScreen, title: 'FILES' },
         ],
     }
 
+    _updateCodeBottomTabItemScreenTopTabStatus = (index) => {
+        const {updateAnimatedInterpolate} = this.props
+        if(this.state.routes[index] !== ROUTES_KEY_ReadmeTopTabItemScreen) {
+            updateAnimatedInterpolate()
+        }
+        this.setState({ index })
+        this.props.dispatch_updateCodeBottomTabItemScreenTopTabStatus(this.state.routes[index])
+    }
 
     render() {
+        const {scrollMappingAnimatedValue} = this.props
         return ( <View style={{flex:1}}>
             <TabView
                 renderTabBar={props => <TabBar {...props}
@@ -33,21 +47,39 @@ class CodeBottomTabItemScreen extends Component{
                 renderScene={({ route, jumpTo }) => {
                         switch (route.key) {
                         case 'ReadmeTopTabItemScreen':
-                            return <ReadmeTopTabItemScreen jumpTo={jumpTo} repositoryModel={this.props.repositoryModel}/>;
+                            return <ReadmeTopTabItemScreen jumpTo={jumpTo}
+                                                           repositoryModel={this.props.repositoryModel}/>;
                         case 'FilesTopTabItemScreen':
-                            return <FilesTopTabItemScreen jumpTo={jumpTo} repositoryModel={this.props.repositoryModel}/>;
+                            return <FilesTopTabItemScreen jumpTo={jumpTo}
+                                                          scrollMappingAnimatedValue={scrollMappingAnimatedValue}
+                                                          repositoryModel={this.props.repositoryModel}/>;
                         }
                     }
                 }
-                onIndexChange={index => this.setState({ index })}
+                onIndexChange={this._updateCodeBottomTabItemScreenTopTabStatus}
                 initialLayout={{ width: Dimensions.get('window').width }}
             />
         </View>)
     }
 }
 
+const mapState = state => ({
 
-export default CodeBottomTabItemScreen
+})
+
+const mapActions = dispatch => ({
+    dispatch_updateCodeBottomTabItemScreenTopTabStatus: (routesKey) => {
+        dispatch({
+            type: CommonAction.UPDATE_VALUE,
+            payload: {
+                id: CommonActionId.UPDATE_CODE_BOTTOM_TAB_ITEM_SCREEN_ROUTES_KEY,
+                value: routesKey
+            }
+        })
+    }
+})
+
+export default connect(mapState,mapActions)(CodeBottomTabItemScreen)
 
 
 const S = StyleSheet.create({

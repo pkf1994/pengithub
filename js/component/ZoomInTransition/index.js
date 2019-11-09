@@ -5,7 +5,7 @@ import {Animated} from 'react-native'
 class ZoomInTransition extends Component {
     constructor(props) {
         super(props)
-        this.zoomInAnimatedValue = new Animated.Value(0)
+        this.animatedValue = new Animated.Value(0)
         this.duration = props.duration ?props.duration : 400
         this.state = {
             children: props.children,
@@ -15,11 +15,10 @@ class ZoomInTransition extends Component {
 
     componentDidMount(): void {
         if(this.state.children) {
-            Animated.spring(this.zoomInAnimatedValue, {
+            Animated.spring(this.animatedValue, {
                 toValue: 1,
                 duration: this.duration,
                 useNativeDriver: true,
-                //delay: delay ? delay : 0
             }).start()
         }
     }
@@ -34,9 +33,11 @@ class ZoomInTransition extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot): void {
-        if(this.state.children !== this.state.newChildren) {
+        if(this.state.children === this.state.newChildren) return
+        const equality = JSON.stringify(prevProps.equalityKey) === JSON.stringify(this.props.equalityKey)
+        if(!equality) {
             if(!this.state.newChildren) {
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 0,
                     duration: this.duration,
                     useNativeDriver: true,
@@ -54,7 +55,7 @@ class ZoomInTransition extends Component {
                 this.setState({
                     children: this.state.newChildren
                 })
-                Animated.spring(this.zoomInAnimatedValue, {
+                Animated.timing(this.animatedValue, {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
@@ -63,6 +64,24 @@ class ZoomInTransition extends Component {
                 return
             }
 
+            Animated.timing(this.animatedValue, {
+                toValue: 0,
+                duration: this.duration,
+                useNativeDriver: true,
+                //delay: delay ? delay : 0
+            }).start()
+            setTimeout(() => {
+                this.setState({
+                    children: this.state.newChildren
+                })
+                Animated.timing(this.animatedValue, {
+                    toValue: 1,
+                    duration: this.duration,
+                    useNativeDriver: true,
+                    //delay: delay ? delay : 0
+                }).start()
+            },this.duration)
+        }else {
             this.setState({
                 children: this.state.newChildren
             })
@@ -74,10 +93,10 @@ class ZoomInTransition extends Component {
 
         return (
             <Animated.View  style={{
-                opacity: this.zoomInAnimatedValue,
+                opacity: this.animatedValue,
                 transform: [
                     {
-                        scale: this.zoomInAnimatedValue.interpolate({
+                        scale: this.animatedValue.interpolate({
                             inputRange:[0,1],
                             outputRange: [0.8,1]
                         })

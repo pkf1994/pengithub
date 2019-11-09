@@ -95,6 +95,15 @@ class ProjectItemCardEX extends PureComponent {
                 languageColor: repositoryModel.languageColor
             }
         },StatusBar._currentValues)
+     /*   ComprehensiveNavigationActionsBuilder.getComprehensiveNavigationActions().navigate(navigation,'TestPage',{
+            repositoryModel:{
+                repo: repositoryModel.name,
+                owner: repositoryModel.author,
+                avatar: repositoryModel.avatar,
+                language: repositoryModel.language,
+                languageColor: repositoryModel.languageColor
+            }
+        },StatusBar._currentValues)*/
     }
 
     _animateIn = () => {

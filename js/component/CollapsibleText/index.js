@@ -1,9 +1,8 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
-import {StyleSheet,TouchableNativeFeedback,Text,View,TouchableWithoutFeedback,LayoutAnimation} from "react-native";
+import {StyleSheet,TouchableNativeFeedback,Text,View,LayoutAnimation} from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/AntDesign'
-import {FadeInTransition} from "../index";
 export default class CollapsibleText extends PureComponent{
 
     static propsType = {

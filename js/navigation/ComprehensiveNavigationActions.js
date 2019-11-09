@@ -21,9 +21,8 @@ class ComprehensiveNavigationActions{
     }
 
     goBack = (navigation) => {
-        console.log(this.preStatusBar)
         if(this.preStatusBar) processStatusBar(this.preStatusBar)
-        navigation.goBack()
+        navigation.pop()
     }
 }
 

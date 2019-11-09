@@ -7,10 +7,8 @@ import Util_RgbToHex from './RgbToHex'
 import Util_StarNumberFormat from './StarNumberFormat'
 import Util_Throtte from './Throttle'
 import Util_UniqueArr from './UniqueArr'
-import Util_DecodeBase64 from './DecodeBase64'
 import {Util_DeepCopy} from './DeepCopy'
 import Util_ThrottleByDelay from './ThrottleByDelay'
-import Util_SafeObjectStringify from './SafeJSONStringify'
 
 export {
     Util_DateFormat,
@@ -23,7 +21,6 @@ export {
     Util_StarNumberFormat,
     Util_Throtte,
     Util_UniqueArr,
-    Util_DecodeBase64,
     Util_ThrottleByDelay,
-    Util_SafeObjectStringify
+
 }

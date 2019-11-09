@@ -62,7 +62,6 @@ export const createAsyncAction_getRepositoryInfoData = (option,meta) => {
 
 export const createAsyncAction_getContributorsCountData = (option,meta) => {
     const url = URL_REPOSITORY_CONTRIBUTORS(meta.owner, meta.repo,{per_page:1})
-    console.log("url:" + url)
 
     let getContributorsCountController = new AbortController()
     let getContributorsCountSignal = getContributorsCountController.signal
@@ -257,7 +256,6 @@ export const createAsyncAction_getTagsData = (option,meta) => {
 
 export const createAsyncAction_getContents = (option,meta) => {
     const url = URL_CONTENTS(meta.owner, meta.repo, meta.path)
-    console.log(url)
     let getContentsController = new AbortController()
     let getContentsSignal = getContentsController.signal
 

@@ -1,16 +1,21 @@
-import {HomePage,RepositoryDetailPage} from '../page';
+import {HomePage,RepositoryDetailPage,TestPage} from '../page';
 
 export default {
     HomePage: {
         screen: HomePage,
         navigationOptions: {
-            header: null
+            headerShown: false
         }
     },
     RepositoryDetailPage: {
         screen: RepositoryDetailPage,
         navigationOptions: {
-            header: null
+            headerShown: false
+        }
+    },
+    TestPage: {
+        screen: TestPage,
+        navigationOptions: {
         }
     }
 }

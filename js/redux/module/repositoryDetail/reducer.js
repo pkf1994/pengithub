@@ -1,7 +1,11 @@
 import {CommonAction,CommonActionId} from '../commonActionType'
+import {
+    ROUTES_KEY_ReadmeTopTabItemScreen
+} from "../../../page/RepositoryDetailPage/component/CodeBottomTabItemScreen";
 const defaultState = {
     showHeader: true,
     showBottomTabBar: true,
+    routesKey: ROUTES_KEY_ReadmeTopTabItemScreen,
     repositoryInfo: {
         data: {},
         loading: false,
@@ -281,6 +285,15 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 showHeader: action.payload.flag
+            }
+        }
+    }
+
+    if(action.type === CommonAction.UPDATE_VALUE) {
+        if(action.payload.id === CommonActionId.UPDATE_CODE_BOTTOM_TAB_ITEM_SCREEN_ROUTES_KEY) {
+            return {
+                ...state,
+                routesKey: action.payload.value
             }
         }
     }

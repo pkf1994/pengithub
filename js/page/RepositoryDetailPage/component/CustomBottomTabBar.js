@@ -3,8 +3,8 @@ import {DeviceEventEmitter, LayoutAnimation, View, StyleSheet} from 'react-nativ
 import {connect} from 'react-redux'
 import { BottomTabBar } from 'react-navigation';
 import {
-    EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,
-    EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE
+    EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE, EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,
+    EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE, EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE
 } from "../../DeviceEventConstant";
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
@@ -26,7 +26,8 @@ class CustomBottomTabBar extends PureComponent{
     }
 
     componentWillUnmount(): void {
-        DeviceEventEmitter.removeAllListeners()
+        DeviceEventEmitter.removeListener(EVENTS_HIDE_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,this._hideBottomTabBar)
+        DeviceEventEmitter.removeListener(EVENTS_SHOW_BOTTOM_TABBAR_OF_REPOSITORY_DETAIL_PAGE,this._showBottomTabBar)
     }
 
     _getData = () => {

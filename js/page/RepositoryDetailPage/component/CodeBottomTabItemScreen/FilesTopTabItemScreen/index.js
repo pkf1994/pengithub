@@ -1,7 +1,7 @@
 import React, {Component, PureComponent} from 'react'
 import {connect} from 'react-redux'
-import {View, Text, FlatList, Dimensions} from 'react-native'
-import {Divider} from 'react-native-elements'
+import {View, Text,FlatList, Dimensions,Animated} from 'react-native'
+//import {FlatList} from'react-native-gesture-handler'
 import {createAsyncAction_getFilesData} from "../../../../../redux/module/repositoryDetail/action";
 import {LoadingView, SlideInTransition} from "../../../../../component";
 import FileListItem from "./FileListItem";
@@ -22,8 +22,12 @@ class FilesTopTabItemScreen extends Component{
         </SlideInTransition>
     }
 
+    _onScroll = ({nativeEvent}) => {
+        console.log(nativeEvent)
+    }
+
     render() {
-        const {repositoryDetailStore} = this.props
+        const {repositoryDetailStore,scrollMappingAnimatedValue} = this.props
         const {contents,branches,releases} = repositoryDetailStore
         const {loading,data} = contents
         return (
@@ -33,6 +37,14 @@ class FilesTopTabItemScreen extends Component{
                              loading={loading}
                              style={{flex:1}}>
                     <FlatList data={data}
+                              onScroll={Animated.event(
+                                  [{ nativeEvent: {
+                                          contentOffset: {
+                                              y: scrollMappingAnimatedValue
+                                          }
+                                      }
+                                  }]
+                              )}
                               keyExtractor={item => "" + item.sha}
                               ItemSeparatorComponent={FlatListDivider}
                               renderItem={itemData => this._renderItem(itemData)}

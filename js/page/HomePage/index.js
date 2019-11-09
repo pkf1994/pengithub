@@ -6,16 +6,14 @@ import {
     Animated,
     Dimensions,
     Image,
-    Text,
+    Text,FlatList,
     StatusBar,
     LayoutAnimation, ActivityIndicator
 } from 'react-native';
 import {Button} from 'react-native-elements'
 import {connect} from 'react-redux'
-import {FlatList} from 'react-native-gesture-handler'
 import {HeaderOfHomePage,ProjectItemCardEX} from './component'
 import GlobalStyle from '../../util/GlobalStyle';
-var Spinner = require('react-native-spinkit');
 import {
     createSyncAction_getAllLanguageListData,
     createSyncAction_getMoreTrendingData,

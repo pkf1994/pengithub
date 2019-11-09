@@ -5,41 +5,20 @@ import { BlurView } from "@react-native-community/blur";
 export default class TestPage extends Component {
     constructor(props) {
         super(props);
-        this.state = { viewRef: null };
     }
 
-    imageLoaded = () => {
-        console.log('loaded')
-        this.setState({ viewRef: findNodeHandle(this.backgroundImage) });
+    componentWillUnmount(): void {
+        console.log('test page will un mount')
+    }
+
+    componentDidMount(): void {
+        console.log('test page did mount')
     }
 
     render() {
         return (
             <View style={styles.container}>
-
-                <Image
-                    ref={img => {
-                        this.backgroundImage = img;
-                    }}
-                    source={{uri: 'http://b-ssl.duitang.com/uploads/item/201512/07/20151207231724_UwXSH.thumb.700_0.jpeg'}}
-                    style={styles.absolute}
-                    onLoadEnd={this.imageLoaded}
-                />
-
-                {
-                    this.state.viewRef ?
-                        <BlurView
-                            style={styles.absolute}
-                            viewRef={this.state.viewRef}
-                            blurType="light"
-                            blurAmount={5}
-                        />
-                        :
-                        null
-                }
-                <Text>Hi, I am some unblurred text</Text>
-
-
+                <Text>HI!!!!!</Text>
             </View>
         );
     }
