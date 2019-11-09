@@ -84,8 +84,7 @@ class HeaderOfHomePage extends PureComponent{
                     </View>
                     <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                         <FadeInTransition equalityKey={[trendingLanguage === 'Any' ? 'Trending' : trendingLanguage,fontColor]}
-                                          duration={1000}
-                                          delay={500}>
+                                          duration={1000}>
                             <FadeChangeText style={{flexShrink:-1,fontSize: 34 ,fontWeight: "bold",color:fontColor,includeFontPadding: false}}
                                             numberOfLines={1}
                                             ellipsizeMode={'tail'}>

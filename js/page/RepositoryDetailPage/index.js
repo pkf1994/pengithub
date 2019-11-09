@@ -20,6 +20,7 @@ class RepositoryDetailPage extends Component{
 
     constructor(props) {
         super(props)
+        this.fetchAbortController = new AbortController()
         this.scrollMappingAnimatedValue = new Animated.Value(0)
         this.heightOfHeader = undefined
         this.state = {
@@ -33,12 +34,13 @@ class RepositoryDetailPage extends Component{
     componentDidMount(): void {
         console.log('repository detail page did mount')
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._goBack);
-        this._getData()
+        this._getData(this.fetchAbortController)
         DeviceEventEmitter.addListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
         DeviceEventEmitter.addListener(EVENTS_SHOW_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._showHeader)
     }
 
     componentWillUnmount(): void {
+        this.fetchAbortController.abort()
         console.log('repository detail page will unmount')
         this.backHandler.remove();
         DeviceEventEmitter.removeListener(EVENTS_HIDE_HEADER_OF_REPOSITORY_DETAIL_PAGE,this._hideHeader)
@@ -84,9 +86,9 @@ class RepositoryDetailPage extends Component{
         }))
     }
 
-    _getData = () => {
+    _getData = (abortController ) => {
         const {repositoryModel} = getParamsFromNavigation(this.props)
-        this.props.dispatchGetData(repositoryModel.owner,repositoryModel.repo)
+        this.props.dispatch_getData(repositoryModel.owner,repositoryModel.repo,abortController)
     }
 
     updateAnimatedInterpolate = () => {
@@ -157,8 +159,8 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatchGetData: (owner,repo) => {
-        dispatch(createAsyncAction_getRepositoryInfoData({},{owner:owner,repo:repo}))
+    dispatch_getData: (owner,repo,abortController) => {
+        dispatch(createAsyncAction_getRepositoryInfoData({fetchOption:{signal:abortController.signal}},{owner:owner,repo:repo}))
     }
 })
 

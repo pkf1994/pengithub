@@ -86,9 +86,9 @@ export const createSyncAction_getMoreTrendingData = (delay) => {
     }
 }
 
-export const createSyncAction_getAllLanguageListData = () => {
+export const createSyncAction_getAllLanguageListData = (option) => {
     return dispatch => {
-        DataStore.fetchData(URL_ALL_LANGUAGE,{}).then(wrappedData => {
+        DataStore.fetchData(URL_ALL_LANGUAGE,option).then(wrappedData => {
             dispatch({
                 type: CommonAction.GET_DATA_SUCCESS,
                 payload: {

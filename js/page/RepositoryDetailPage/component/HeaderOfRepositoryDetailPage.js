@@ -141,13 +141,13 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{repositoryInfo.data.forks_count}</Text>
+                                <Text style={S.countItemText}>{Util_StarNumberFormat(repositoryInfo.data.forks_count)}</Text>
                                 <Text style={S.countItemLabel}>Fork</Text>
                             </View>
                         </TouchableNativeFeedback>
                         <TouchableNativeFeedback>
                             <View style={S.countItem}>
-                                <Text style={S.countItemText}>{contributorCount.loading ? "-" : contributorCount.data}</Text>
+                                <Text style={S.countItemText}>{contributorCount.loading ? "-" : Util_StarNumberFormat(contributorCount.data)}</Text>
                                 <Text style={S.countItemLabel}>Contributors</Text>
                             </View>
                         </TouchableNativeFeedback>

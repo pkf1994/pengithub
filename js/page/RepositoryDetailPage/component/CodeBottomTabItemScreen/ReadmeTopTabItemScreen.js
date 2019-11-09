@@ -21,6 +21,8 @@ class ReadmeTopTabItemScreen extends PureComponent{
             showHeaderAndBottomTabBarFlag: true,
             heightOfHeaderOfRepositoryDetailPage: undefined,
             HTML: undefined,
+            loadingWebView: false,
+            webViewProgressBarAndroidIndeterminate: true
         }
     }
 
@@ -154,19 +156,25 @@ class ReadmeTopTabItemScreen extends PureComponent{
         },500,"hideHeader",this)
     }
 
+    _handleWebViewNavigationStateChange = newNavState => {
+        this.setState({
+            loadingWebView: newNavState.loading
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot): void {
+
+    }
+
     render() {
         const {repositoryDetailStore} = this.props
         const {readme,repositoryInfo} = repositoryDetailStore
         const {data} = repositoryInfo
         const {svn_url,default_branch} = data
-        const {HTML} = this.state
+        const {HTML,loadingWebView} = this.state
         return <View style={S.container}>
                     {
-                        readme.loading || repositoryInfo.loading ?
-                            <ProgressBarAndroid  color="gray" styleAttr='Horizontal'
-                                                 style={S.progressBar}
-                                                 indeterminate={true}/>
-                            :
+                        !readme.loading &&
                             <View style={{flex:1}}>
                                 <WebView
                                     style={S.webView}
@@ -176,10 +184,20 @@ class ReadmeTopTabItemScreen extends PureComponent{
                                     domStorageEnabled={true}
                                     onMessage={this._onMessage}
                                     scalesPageToFit={false}
+                                    onNavigationStateChange={this._handleWebViewNavigationStateChange}
                                     onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest}
                                 />
                             </View>
                     }
+
+            {
+                readme.loading &&
+                <ProgressBarAndroid  color="gray"
+                                     styleAttr='Horizontal'
+                                     style={S.progressBar}
+                                     indeterminate={true}/>
+            }
+
         </View>
     }
 }
@@ -207,7 +225,9 @@ const S = StyleSheet.create({
 
     },
     progressBar: {
-        width: Dimensions.get('window').width - 20
+        width: Dimensions.get('window').width - 20,
+        position: 'absolute',
+        top: 10
     },
     webView: {
         flex: 1,

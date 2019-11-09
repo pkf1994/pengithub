@@ -28,6 +28,7 @@ class HomePage extends PureComponent {
 
     constructor(props) {
         super(props)
+        this.fetchAbortController = new AbortController()
         this.state = {
             hideStatusBar: false,
             heightOfHeader: undefined,
@@ -41,9 +42,13 @@ class HomePage extends PureComponent {
     componentDidMount(): void {
         const {trendingStore,dispatchGetAllLanguage} = this.props
         if(trendingStore.trendingRepositoryList.length === 0) {
-            this.getData(false)
+            this.getData(false,this.fetchAbortController)
         }
-        dispatchGetAllLanguage()
+        dispatchGetAllLanguage(this.fetchAbortController)
+    }
+
+    componentWillUnmount(): void {
+        this.fetchAbortController.abort()
     }
 
     componentDidUpdate(prevProps, prevState, snapshot): void {
@@ -55,11 +60,11 @@ class HomePage extends PureComponent {
         }
     }
 
-    getData(refresh) {
+    getData(refresh,abortController) {
         const {trendingStore} = this.props
         const {loading,refreshing,trendingLanguage,since} = trendingStore
         if(loading || refreshing) return
-        this.props.dispatchGetData(refresh,trendingLanguage,since)
+        this.props.dispatchGetData(refresh,trendingLanguage,since,abortController)
     }
 
     _getMoreData() {
@@ -223,14 +228,14 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatchGetData: (refresh,trendingLanguage,since) => {
-        dispatch(createSyncAction_getTrendingData({refresh: refresh},{trendingLanguage:trendingLanguage,since:since}))
+    dispatchGetData: (refresh,trendingLanguage,since,abortController) => {
+        dispatch(createSyncAction_getTrendingData({refresh: refresh,fetchOption:{signal:abortController.signal}},{trendingLanguage:trendingLanguage,since:since}))
     },
     dispatchGetMoreData: () => {
         dispatch(createSyncAction_getMoreTrendingData(600))
     },
-    dispatchGetAllLanguage: () => {
-        dispatch(createSyncAction_getAllLanguageListData())
+    dispatchGetAllLanguage: (abortController) => {
+        dispatch(createSyncAction_getAllLanguageListData({fetchOption: {signal:abortController.signal}}))
     }
 })
 
