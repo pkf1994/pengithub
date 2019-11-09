@@ -77,20 +77,19 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
 
                         <ZoomInTransition equalityKey={repositoryInfo.loading} duration={500}>
                             {
-                                repositoryInfo.loading && <ActivityIndicator color="gray" style={{marginLeft:5}}/>
+                                repositoryInfo.loading ? <ActivityIndicator color="gray" style={{marginLeft:5}}/>
+                                :
+                                    (
+                                        repositoryInfo.data.license &&
+                                        <Badge containerStyle={{backgroundColor: "#eeeeee",marginLeft:5}}>
+                                            <Text style={{includeFontPadding: false}}>
+                                                {repositoryInfo.data.license.spdx_id}
+                                            </Text>
+                                        </Badge>
+                                    )
                             }
                         </ZoomInTransition>
 
-                        <ZoomInTransition equalityKey={repositoryInfo.loading} duration={500}>
-                            {
-                                repositoryInfo.data.license && !repositoryInfo.loading &&
-                                <Badge containerStyle={{backgroundColor: "#eeeeee",marginLeft:5}}>
-                                    <Text style={{includeFontPadding: false}}>
-                                        {repositoryInfo.data.license.spdx_id}
-                                    </Text>
-                                </Badge>
-                            }
-                        </ZoomInTransition>
 
                         <Badge containerStyle={{backgroundColor: repositoryModel.languageColor ? repositoryModel.languageColor : languageColor,marginLeft:5}}>
                             <Text style={{color:fontColor,includeFontPadding: false,fontStyle: 'italic',fontWeight:'bold'}}>

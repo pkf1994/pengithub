@@ -7,7 +7,8 @@ class ZoomInTransition extends Component {
         super(props)
         this.animatedValue = new Animated.Value(0)
         this.duration = props.duration ?props.duration : 400
-        this.state = {
+        this.delay = props.delay ? props.delay : 0
+            this.state = {
             children: props.children,
             newChildren: props.children
         }
@@ -98,7 +99,7 @@ class ZoomInTransition extends Component {
                     {
                         scale: this.animatedValue.interpolate({
                             inputRange:[0,1],
-                            outputRange: [0.8,1]
+                            outputRange: [0.3,1]
                         })
                     }
                 ]}}>

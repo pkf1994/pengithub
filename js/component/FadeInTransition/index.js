@@ -42,25 +42,34 @@ class FadeInTransition extends PureComponent {
                     toValue: 0,
                     duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
+                    delay: this.delay
                 }).start()
                 setTimeout(() => {
                     this.setState({
                         children: this.state.newChildren
                     })
-                },this.duration)
+                },this.duration + this.delay)
                 return
             }
 
             if(!this.state.children && this.state.newChildren) {
-                this.setState({
-                    children: this.state.newChildren
-                })
+                if(this.delay !== 0) {
+                    setTimeout(() => {
+                        this.setState({
+                            children: this.state.newChildren
+                        })
+                    },this.delay)
+                }else{
+                    this.setState({
+                        children: this.state.newChildren
+                    })
+                }
+
                 Animated.timing(this.animatedValue, {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
+                    delay: this.delay
                 }).start()
                 return
             }
@@ -69,7 +78,7 @@ class FadeInTransition extends PureComponent {
                 toValue: 0,
                 duration: this.duration,
                 useNativeDriver: true,
-                //delay: delay ? delay : 0
+                delay: this.delay
             }).start()
             setTimeout(() => {
                 this.setState({
@@ -79,9 +88,8 @@ class FadeInTransition extends PureComponent {
                     toValue: 1,
                     duration: this.duration,
                     useNativeDriver: true,
-                    //delay: delay ? delay : 0
                 }).start()
-            },this.duration)
+            },this.duration + this.delay)
         }else {
             this.setState({
                 children: this.state.newChildren

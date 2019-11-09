@@ -147,7 +147,6 @@ class RepositoryDetailPage extends Component{
                 </Animated.View>
                 <View style={{height: navigatorPaddingTop}}/>
                 <BottomTabNavigator/>
-
             </View>
         )
     }

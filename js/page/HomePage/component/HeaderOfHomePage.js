@@ -95,8 +95,7 @@ class HeaderOfHomePage extends PureComponent{
 
                         <View style={{flexDirection:'row'}}>
                             <FadeInTransition equalityKey={[fontColor,pickerEnabled ? 1:0]}
-                                              duration={1000}
-                                              delay={500}>
+                                              duration={1000}>
                                 <IconMaskedPicker  mode = 'dropdown'
                                                    icon={<AntDesign
                                                        name="filter"
@@ -109,8 +108,7 @@ class HeaderOfHomePage extends PureComponent{
                                                    onValueChange = {this._updateTrendingLanguage}/>
                             </FadeInTransition>
                             <FadeInTransition equalityKey={[fontColor,pickerEnabled ? 1:0]}
-                                              duration={1000}
-                                              delay={500}>
+                                              duration={1000}>
                                 <IconMaskedPicker  mode = 'dropdown'
                                                    icon={<MaterialCommunityIcons
                                                        name="calendar-range"
