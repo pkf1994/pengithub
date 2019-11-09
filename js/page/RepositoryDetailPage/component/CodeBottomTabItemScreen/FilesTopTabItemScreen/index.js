@@ -8,12 +8,18 @@ import FileListItem from "./FileListItem";
 
 class FilesTopTabItemScreen extends Component{
 
-    componentDidMount(): void {
-        this._getData()
+    constructor(props) {
+        super(props)
+        this.fetchAbortController = new AbortController()
     }
 
-    _getData = () => {
-        this.props.dispatch_getFilesData(this.props.repositoryModel)
+
+    componentDidMount(): void {
+        this._getData(this.fetchAbortController)
+    }
+
+    _getData = (abortController) => {
+        this.props.dispatch_getFilesData(this.props.repositoryModel,abortController)
     }
 
     _renderItem = (itemData) => {
@@ -68,8 +74,8 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatch_getFilesData: (repositoryModel) => {
-        dispatch(createAsyncAction_getFilesData({},{
+    dispatch_getFilesData: (repositoryModel,abortController) => {
+        dispatch(createAsyncAction_getFilesData({abortController:abortController},{
             owner: repositoryModel.owner,
             repo: repositoryModel.repo,
             path: ''

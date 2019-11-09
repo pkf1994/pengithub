@@ -160,7 +160,8 @@ export default (state = defaultState, action) => {
             ...state,
             networkErr: true,
             trendingRepositoryList: [],
-            loading: false
+            loading: false,
+            refreshing: false
         }
     }
 

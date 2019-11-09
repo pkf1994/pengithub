@@ -86,7 +86,7 @@ class RepositoryDetailPage extends Component{
         }))
     }
 
-    _getData = (abortController ) => {
+    _getData = (abortController) => {
         const {repositoryModel} = getParamsFromNavigation(this.props)
         this.props.dispatch_getData(repositoryModel.owner,repositoryModel.repo,abortController)
     }
@@ -160,7 +160,7 @@ const mapState = state => ({
 
 const mapActions = dispatch => ({
     dispatch_getData: (owner,repo,abortController) => {
-        dispatch(createAsyncAction_getRepositoryInfoData({fetchOption:{signal:abortController.signal}},{owner:owner,repo:repo}))
+        dispatch(createAsyncAction_getRepositoryInfoData({abortController:abortController,fetchOption:{signal:abortController.signal}},{owner:owner,repo:repo}))
     }
 })
 

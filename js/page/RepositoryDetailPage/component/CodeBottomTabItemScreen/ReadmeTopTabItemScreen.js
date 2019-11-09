@@ -16,6 +16,7 @@ class ReadmeTopTabItemScreen extends PureComponent{
 
     constructor(props) {
         super(props)
+        this.fetchAbortController = new AbortController()
         this.state = {
             readmeData: undefined,
             showHeaderAndBottomTabBarFlag: true,
@@ -27,7 +28,7 @@ class ReadmeTopTabItemScreen extends PureComponent{
     }
 
     componentDidMount() {
-        this._getData()
+        this._getData(this.fetchAbortController)
     }
 
 
@@ -42,8 +43,8 @@ class ReadmeTopTabItemScreen extends PureComponent{
         return null
     }
 
-    _getData = () => {
-        this.props.dispatch_getReadmeData(this.props.repositoryModel)
+    _getData = (abortController) => {
+        this.props.dispatch_getReadmeData(this.props.repositoryModel,abortController)
     }
 
     static _generateHTML = (readmeData) => {
@@ -207,8 +208,8 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatch_getReadmeData: (repositoryModel) => {
-        dispatch(createAsyncAction_getReadmeData({},{
+    dispatch_getReadmeData: (repositoryModel,abortController) => {
+        dispatch(createAsyncAction_getReadmeData({abortController:abortController},{
             owner: repositoryModel.owner,
             repo: repositoryModel.repo
         }))

@@ -23,6 +23,7 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
         const languageColor = Util_GetColorOfLanguage(repositoryModel.language)
         const subLanguageColor = Util_GetLightOrDarkerColor(languageColor,0.2)
         const fontColor = Util_GetFontColorByBackgroundColor(subLanguageColor)
+        this.fetchAbortController = new AbortController()
         this.state = {
             languageColor: languageColor,
             subLanguageColor: subLanguageColor,
@@ -31,12 +32,12 @@ class HeaderOfRepositoryDetailPage extends PureComponent{
     }
 
     componentDidMount(): void {
-        this._getData()
+        this._getData(this.fetchAbortController)
     }
 
-    _getData = () => {
+    _getData = (abortController) => {
         const {repositoryModel} = Util_GetParamsFromNavigation(this.props)
-        this.props.dispatch_getContributorsCount(repositoryModel)
+        this.props.dispatch_getContributorsCount(repositoryModel,abortController)
     }
 
 
@@ -165,8 +166,8 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatch_getContributorsCount: (repositoryModel) => {
-        dispatch(createAsyncAction_getContributorsCountData({},{
+    dispatch_getContributorsCount: (repositoryModel,abortController) => {
+        dispatch(createAsyncAction_getContributorsCountData({abortController:abortController},{
             owner: repositoryModel.owner,
             repo: repositoryModel.repo
         }))

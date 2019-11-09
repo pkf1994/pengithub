@@ -9,7 +9,7 @@ export default class DataStore {
         //强制刷新
         if(option.refresh) {
             return new Promise(((resolve, reject) => {
-                DataStore.fetchNetData(url,option.fetchOption).then((wrappedData) => {
+                DataStore.fetchNetData(url,option.fetchOption,option.timeout,option.abortController).then((wrappedData) => {
                     resolve(wrappedData)
                     this.cacheData(url,wrappedData,()=>{})
                 }).catch((e) => {
@@ -25,7 +25,7 @@ export default class DataStore {
                     throw new Error("need to fetch from internet")
                 }
             }).catch((e) => {
-                DataStore.fetchNetData(url,option.fetchOption).then((wrappedData) => {
+                DataStore.fetchNetData(url,option.fetchOption,option.timeout,option.abortController).then((wrappedData) => {
                     resolve(wrappedData)
                     this.cacheData(url,wrappedData,()=>{})
                 }).catch((e) => {
@@ -72,8 +72,20 @@ export default class DataStore {
      * @param url
      * @returns {Promise<any> | Promise<*>}
      */
-    static fetchNetData(url,fetchOption) {
-        return new Promise((resolve,reject) => {
+    static fetchNetData(url,fetchOption,timeout,abortController) {
+        console.log("fetchNetData: " + url)
+        if(!abortController) {
+            abortController = new AbortController()
+            fetchOption.signal = abortController.signal
+        }
+        let timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('request time out'))
+                abortController.abort()
+            }, timeout ? timeout : 20000);
+        });
+
+        let fetchPromise = new Promise((resolve,reject) => {
             fetch(url,fetchOption).then(async (response) => {
                 if (response.ok) {
                     if(response.headers.map['content-type'] === CONTENT_TEPE_HTML) {
@@ -93,6 +105,7 @@ export default class DataStore {
                 reject(e)
             })
         })
+        return Promise.race([timeoutPromise,fetchPromise])
     }
 
     /**

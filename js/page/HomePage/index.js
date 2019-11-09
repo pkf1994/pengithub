@@ -20,7 +20,7 @@ import {
     createSyncAction_getTrendingData,
 } from '../../redux/module/trending/action';
 import {Util_Throtte} from '../../util';
-import {LoadingView,SlideInTransition} from '../../component';
+import {FadeInTransition, LoadingView, SlideInTransition} from '../../component';
 
 const NEXT_LAYOUTANIAMTION = LayoutAnimation.create(500, 'easeInEaseOut', 'opacity')
 
@@ -40,11 +40,14 @@ class HomePage extends PureComponent {
     }
 
     componentDidMount(): void {
-        const {trendingStore,dispatchGetAllLanguage} = this.props
+        const {trendingStore,dispatch_getAllLanguage} = this.props
+        if(!this.fetchAbortController){
+            this.fetchAbortController = new AbortController()
+        }
         if(trendingStore.trendingRepositoryList.length === 0) {
             this.getData(false,this.fetchAbortController)
         }
-        dispatchGetAllLanguage(this.fetchAbortController)
+        dispatch_getAllLanguage(this.fetchAbortController)
     }
 
     componentWillUnmount(): void {
@@ -55,25 +58,26 @@ class HomePage extends PureComponent {
         const preTrendingStore = prevProps.trendingStore
         const trendingStore =this.props.trendingStore
         if(preTrendingStore.since !== trendingStore.since || preTrendingStore.trendingLanguage !== trendingStore.trendingLanguage) {
-            this.getData()
+            console.log('componentDidUpdate and get data')
+            this.getData(false,this.fetchAbortController)
             this.flatList.scrollToOffset({offset:0,animated:false})
         }
     }
 
-    getData(refresh,abortController) {
-        const {trendingStore} = this.props
+    getData = (refresh,abortController) => {
+        const {trendingStore,dispatch_getData} = this.props
         const {loading,refreshing,trendingLanguage,since} = trendingStore
         if(loading || refreshing) return
-        this.props.dispatchGetData(refresh,trendingLanguage,since,abortController)
+        dispatch_getData(refresh,trendingLanguage,since,abortController)
     }
 
-    _getMoreData() {
-        const {trendingStore} = this.props
+    _getMoreData = () => {
+        const {trendingStore,dispatch_getMoreData} = this.props
         const {currentPage,maxPage,trendingRepositoryList} = trendingStore
         console.log("trendingRepositoryList.length:" + trendingRepositoryList.length)
         if(trendingRepositoryList.length === 0) return
         if(trendingStore.loading || trendingStore.loadingMore || currentPage >= maxPage) return
-        this.props.dispatchGetMoreData()
+        dispatch_getMoreData()
     }
 
     renderItem(itemData) {
@@ -112,24 +116,29 @@ class HomePage extends PureComponent {
         const {trendingStore} = this.props
         const {heightOfHeader} = this.state
         const {getDataReturnNull,networkErr} = trendingStore
-        const heightOfEmptyComponent = Dimensions.get('window').height - heightOfHeader
+        const heightOfEmptyComponent = Dimensions.get('window').height - (heightOfHeader ? heightOfHeader : 0)
+        return (
+            <FadeInTransition duration={500} equalityKey={[getDataReturnNull,networkErr]}>
+                {
+                    getDataReturnNull ?
+                        <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
+                            <Image style={S.emptyImage} source={require('../../asset/image/box_PNG132.png')}/>
+                        </View>
+                        :
+                        (
+                            networkErr && <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
+                                <Text style={S.networkErr}>NETWORK ERR</Text>
+                                <Button title="retry"
+                                        titleStyle={{color:'gray',fontSize: 16,includeFontPadding:false}}
+                                        type="outline"
+                                        onPress={() => this.getData(false,this.fetchAbortController)}
+                                        buttonStyle={{paddingHorizontal:15,marginBottom:100,borderColor:'gray',borderWidth:1,borderRadius:5}}/>
+                            </View>
+                        )
+                }
+            </FadeInTransition>
 
-        if(getDataReturnNull) {
-            return <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
-                <Image style={S.emptyImage} source={require('../../asset/image/box_PNG132.png')}/>
-            </View>
-        }
-        if(networkErr) {
-            return <View style={[S.emptyComponentContainer,{height:heightOfEmptyComponent}]}>
-                <Text style={S.networkErr}>NETWORK ERR</Text>
-                <Button title="retry"
-                        titleStyle={{color:'gray',fontSize: 16,includeFontPadding:false}}
-                        type="Outline"
-                        onPress={this.getData(false)}
-                        containerStyle={{paddingHorizontal:20,marginBottom:100,borderColor:'gray',borderWidth:1,borderRadius:5}}/>
-            </View>
-        }
-        return null
+        )
     }
 
     _onPanGestureEvent = ({nativeEvent}) => {
@@ -200,7 +209,7 @@ class HomePage extends PureComponent {
                                       titleColor={languageColor}
                                       colors={[languageColor]}
                                       refreshing={refreshing}
-                                      onRefresh={() => this.getData(true)}
+                                      onRefresh={() => this.getData(true,this.fetchAbortController)}
                                       tintColor={"black"}
                                   />}
                                   ListEmptyComponent={this._ListEmptyComponent}
@@ -228,14 +237,15 @@ const mapState = state => ({
 })
 
 const mapActions = dispatch => ({
-    dispatchGetData: (refresh,trendingLanguage,since,abortController) => {
-        dispatch(createSyncAction_getTrendingData({refresh: refresh,fetchOption:{signal:abortController.signal}},{trendingLanguage:trendingLanguage,since:since}))
+    dispatch_getData: (refresh,trendingLanguage,since,abortController) => {
+        console.log(abortController)
+        dispatch(createSyncAction_getTrendingData({refresh: refresh,abortController:abortController,fetchOption:{signal:abortController.signal}},{trendingLanguage:trendingLanguage,since:since}))
     },
-    dispatchGetMoreData: () => {
-        dispatch(createSyncAction_getMoreTrendingData(600))
+    dispatch_getMoreData: () => {
+        dispatch(createSyncAction_getMoreTrendingData(300))
     },
-    dispatchGetAllLanguage: (abortController) => {
-        dispatch(createSyncAction_getAllLanguageListData({fetchOption: {signal:abortController.signal}}))
+    dispatch_getAllLanguage: (abortController) => {
+        dispatch(createSyncAction_getAllLanguageListData({abortController:abortController,fetchOption: {signal:abortController.signal}}))
     }
 })
 
@@ -248,6 +258,7 @@ const S = StyleSheet.create({
         height: Dimensions.get('window').height
     },
     emptyComponentContainer: {
+        flex: 1,
         right: 0,
         left: 0,
         justifyContent:'center',
@@ -261,7 +272,7 @@ const S = StyleSheet.create({
     networkErr: {
         fontWeight: 'bold',
         marginBottom:10,
-        color: 'gray',
+        color: '#BB0000',
         fontSize: 22
     }
 })
